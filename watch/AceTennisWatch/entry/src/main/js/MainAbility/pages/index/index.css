@@ -16,6 +16,12 @@
   font-size: 20px;
   text-align: center;
 }
+.quick-title {
+  width: 220px;
+  margin-top: 12px;
+  font-size: 20px;
+  text-align: center;
+}
 .session-status {
   width: 220px;
   margin-top: 4px;
@@ -25,6 +31,18 @@
 .elapsed-status {
   width: 220px;
   margin-top: 2px;
+  font-size: 16px;
+  text-align: center;
+}
+.quick-label {
+  width: 220px;
+  margin-top: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+.quick-metric {
+  width: 220px;
+  margin-top: 6px;
   font-size: 16px;
   text-align: center;
 }

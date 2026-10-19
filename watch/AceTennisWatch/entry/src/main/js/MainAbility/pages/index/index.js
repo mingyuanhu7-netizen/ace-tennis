@@ -11,7 +11,10 @@ export default {
         currentScreen: WORKOUT_STATES.READY,
         lastEvent: null,
         sessionStatus: '',
-        elapsedTime: ''
+        elapsedTime: '',
+        quickHeartRate: '',
+        quickSwingCount: '',
+        quickScore: ''
     },
     onInit() {
         this.runtimeSession = createWorkoutSession();
@@ -19,6 +22,9 @@ export default {
             ? 'SESSION OK'
             : 'SESSION ERROR';
         this.elapsedTime = formatElapsedTime(0);
+        this.quickHeartRate = '';
+        this.quickSwingCount = '';
+        this.quickScore = '';
         this.timerHandle = null;
     },
     onDestroy() {
@@ -81,6 +87,22 @@ export default {
             this.startTimer();
         } else {
             this.stopTimer();
+        }
+    },
+    onConfirmFinish() {
+        this.lastEvent = WORKOUT_EVENTS.CONFIRM_FINISH;
+        this.runtimeSession = dispatchWorkoutEvent(
+            this.runtimeSession,
+            WORKOUT_EVENTS.CONFIRM_FINISH,
+            Date.now()
+        );
+        this.currentScreen = this.runtimeSession.state;
+        this.refreshElapsedTime();
+        this.stopTimer();
+        if (this.currentScreen === WORKOUT_STATES.QUICK_RESULT) {
+            this.quickHeartRate = `${this.runtimeSession.mockHeartRate} BPM`;
+            this.quickSwingCount = `${this.runtimeSession.mockSwingCount} SWINGS`;
+            this.quickScore = this.runtimeSession.mockScoreDisplay;
         }
     },
     refreshElapsedTime() {
