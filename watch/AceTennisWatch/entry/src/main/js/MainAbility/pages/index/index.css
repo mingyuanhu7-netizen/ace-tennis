@@ -16,6 +16,12 @@
   font-size: 20px;
   text-align: center;
 }
+.session-status {
+  width: 220px;
+  margin-top: 4px;
+  font-size: 12px;
+  text-align: center;
+}
 .start {
   width: 160px;
   height: 60px;
