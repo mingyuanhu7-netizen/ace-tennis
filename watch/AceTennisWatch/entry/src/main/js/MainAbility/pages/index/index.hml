@@ -2,6 +2,7 @@
     <text class="brand">AceTennis</text>
     <text class="state">{{ currentScreen }}</text>
     <text class="session-status">{{ sessionStatus }}</text>
+    <text class="elapsed-status">{{ elapsedTime }}</text>
     <div class="start" onclick="onStart">
         <text class="start-label">Start</text>
     </div>
