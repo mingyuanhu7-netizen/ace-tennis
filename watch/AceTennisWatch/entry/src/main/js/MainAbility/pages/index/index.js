@@ -1,4 +1,5 @@
 import { WORKOUT_EVENTS, WORKOUT_STATES } from '../../state/workout-state.js';
+import '../../state/workout-session.js';
 
 export default {
     data: {
