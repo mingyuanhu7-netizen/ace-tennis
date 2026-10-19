@@ -57,6 +57,32 @@ export default {
         this.refreshElapsedTime();
         this.startTimer();
     },
+    onRequestFinish() {
+        this.lastEvent = WORKOUT_EVENTS.REQUEST_FINISH;
+        this.runtimeSession = dispatchWorkoutEvent(
+            this.runtimeSession,
+            WORKOUT_EVENTS.REQUEST_FINISH,
+            Date.now()
+        );
+        this.currentScreen = this.runtimeSession.state;
+        this.refreshElapsedTime();
+        this.stopTimer();
+    },
+    onCancelFinish() {
+        this.lastEvent = WORKOUT_EVENTS.CANCEL_FINISH;
+        this.runtimeSession = dispatchWorkoutEvent(
+            this.runtimeSession,
+            WORKOUT_EVENTS.CANCEL_FINISH,
+            Date.now()
+        );
+        this.currentScreen = this.runtimeSession.state;
+        this.refreshElapsedTime();
+        if (this.currentScreen === WORKOUT_STATES.ACTIVE_WORKOUT) {
+            this.startTimer();
+        } else {
+            this.stopTimer();
+        }
+    },
     refreshElapsedTime() {
         this.elapsedTime = formatElapsedTime(
             getElapsedActiveMs(this.runtimeSession, Date.now())

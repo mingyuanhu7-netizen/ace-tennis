@@ -11,7 +11,6 @@ const markup = readFileSync(
 
 assert.match(markup, /onclick="onPause"/);
 assert.match(markup, /onclick="onResume"/);
-assert.doesNotMatch(markup, /Finish/);
 assert.equal(typeof page.onPause, 'function');
 assert.equal(typeof page.onResume, 'function');
 

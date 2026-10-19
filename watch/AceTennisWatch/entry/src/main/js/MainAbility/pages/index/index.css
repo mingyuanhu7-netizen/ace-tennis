@@ -28,6 +28,12 @@
   font-size: 16px;
   text-align: center;
 }
+.confirmation-message {
+  width: 220px;
+  margin-top: 8px;
+  font-size: 16px;
+  text-align: center;
+}
 .start {
   width: 160px;
   height: 60px;
