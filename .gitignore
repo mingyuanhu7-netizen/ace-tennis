@@ -1,0 +1,18 @@
+# Local GT 5 Pro signing material
+GT5ProSigning/
+*.p12
+*.csr
+*.cer
+*.p7b
+
+# DevEco/Hvigor build output and local IDE state
+**/build/
+**/.hvigor/
+**/node_modules/
+*.hap
+.DS_Store
+
+# Signing configurations may contain locally serialized credentials.
+watch/AceTennisWatch/build-profile.json5
+platform-probes/GT5ProCleanLiteProbe2/build-profile.json5
+platform-probes/GT5Pro-CLEAN-OFFICIAL-API10/build-profile.json5

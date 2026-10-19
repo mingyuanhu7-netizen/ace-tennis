@@ -1,0 +1,7 @@
+<div class="container">
+    <text class="brand">AceTennis</text>
+    <text class="state">{{ currentScreen }}</text>
+    <div class="start" onclick="onStart">
+        <text class="start-label">Start</text>
+    </div>
+</div>
