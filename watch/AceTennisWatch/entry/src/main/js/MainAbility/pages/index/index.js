@@ -35,6 +35,28 @@ export default {
         this.refreshElapsedTime();
         this.startTimer();
     },
+    onPause() {
+        this.lastEvent = WORKOUT_EVENTS.PAUSE;
+        this.runtimeSession = dispatchWorkoutEvent(
+            this.runtimeSession,
+            WORKOUT_EVENTS.PAUSE,
+            Date.now()
+        );
+        this.currentScreen = this.runtimeSession.state;
+        this.refreshElapsedTime();
+        this.stopTimer();
+    },
+    onResume() {
+        this.lastEvent = WORKOUT_EVENTS.RESUME;
+        this.runtimeSession = dispatchWorkoutEvent(
+            this.runtimeSession,
+            WORKOUT_EVENTS.RESUME,
+            Date.now()
+        );
+        this.currentScreen = this.runtimeSession.state;
+        this.refreshElapsedTime();
+        this.startTimer();
+    },
     refreshElapsedTime() {
         this.elapsedTime = formatElapsedTime(
             getElapsedActiveMs(this.runtimeSession, Date.now())
@@ -50,7 +72,7 @@ export default {
         }, 1000);
     },
     stopTimer() {
-        if (this.timerHandle === null) {
+        if (this.timerHandle === null || this.timerHandle === undefined) {
             return;
         }
         clearInterval(this.timerHandle);
