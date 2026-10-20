@@ -123,6 +123,12 @@ The physical target validated the Lite Wearable application model, installation,
 
 The Phase 2 result validates only the Mock Session lifecycle on the physical GT 5 Pro. It does not validate real sensors, persistence, phone sync, historical records, or tennis algorithms.
 
+### Current Engineering Phase
+
+`CURRENT_PHASE = PHASE_3_BASIC_TENNIS_SCORING`
+
+Phase 3 begins with a controlled point-score engine only. Game, deuce, advantage, set, real sensors, persistence, and phone synchronization remain outside the current phase step until separately verified.
+
 ## 4. Historical Validation Path — Superseded
 
 ```text

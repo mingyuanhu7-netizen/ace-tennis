@@ -61,7 +61,7 @@
 | --- | --- | --- |
 | GT 5 Pro Phase 2 Mock Session lifecycle | PASS | `AceTennis-P2-010-COMPLETE-RESET-API10-signed.hap`: full state lifecycle, timer pause/resume, finish confirmation, Quick Result, reset, and a second session starting at `00:00` physically validated |
 
-Platform feasibility and the Phase 2 workout state machine are complete. Real sensors, persistence, phone sync, history, and tennis algorithms remain unverified and out of this result's scope.
+Platform feasibility and the Phase 2 workout state machine are complete. `CURRENT_PHASE = PHASE_3_BASIC_TENNIS_SCORING`. Real sensors, persistence, phone sync, history, and tennis algorithms remain unverified and out of this result's scope; Phase 3 begins with controlled basic point scoring only.
 
 ## 6. Product Approval Checklist
 

@@ -512,7 +512,7 @@ PLATFORM_FEASIBILITY =
 COMPLETE
 
 CURRENT_PHASE =
-REAL_TENNIS_APP_MIGRATION
+PHASE_3_BASIC_TENNIS_SCORING
 
 The real AceTennis functionality should now be migrated onto the
 verified GT5 Pro baseline.
@@ -1112,7 +1112,7 @@ CURRENT_GOLDEN_BASELINE =
 GT5Pro-CLEAN-OFFICIAL-API10
 
 CURRENT_PHASE =
-REAL_TENNIS_APP_MIGRATION
+PHASE_3_BASIC_TENNIS_SCORING
 
 Do not return to platform feasibility work unless new physical
 evidence requires it.
@@ -1680,7 +1680,7 @@ Current phase:
 PLATFORM_FEASIBILITY = COMPLETE
 
 CURRENT_PHASE =
-REAL_TENNIS_APP_MIGRATION
+PHASE_3_BASIC_TENNIS_SCORING
 
 Therefore the default task direction is now:
 
