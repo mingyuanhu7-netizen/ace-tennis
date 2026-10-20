@@ -15,6 +15,8 @@ export function createWorkoutSession() {
         activeSegmentStartedAt: null,
         playerPointIndex: 0,
         opponentPointIndex: 0,
+        playerGames: 0,
+        opponentGames: 0,
         mockHeartRate: MOCK_HEART_RATE,
         mockSwingCount: MOCK_SWING_COUNT,
         mockScoreDisplay: MOCK_SCORE_DISPLAY,

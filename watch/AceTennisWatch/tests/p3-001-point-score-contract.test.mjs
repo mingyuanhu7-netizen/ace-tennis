@@ -15,14 +15,15 @@ const markup = readFileSync(
     'utf8'
 );
 
-assert.match(markup, /Score:/);
+assert.match(markup, /Points/);
 assert.match(markup, /onclick="onPlayerPoint"/);
 assert.match(markup, /onclick="onOpponentPoint"/);
 assert.equal(typeof page.onPlayerPoint, 'function');
 assert.equal(typeof page.onOpponentPoint, 'function');
 
 let score = createPointScore();
-assert.deepEqual(score, { playerPointIndex: 0, opponentPointIndex: 0 });
+assert.equal(score.playerPointIndex, 0);
+assert.equal(score.opponentPointIndex, 0);
 assert.equal(getScoreDisplay(score), '0 - 0');
 
 score = dispatchScoreEvent(score, SCORE_EVENTS.PLAYER_POINT);
@@ -31,9 +32,6 @@ score = dispatchScoreEvent(score, SCORE_EVENTS.PLAYER_POINT);
 assert.equal(getScoreDisplay(score), '30 - 0');
 score = dispatchScoreEvent(score, SCORE_EVENTS.PLAYER_POINT);
 assert.equal(getScoreDisplay(score), '40 - 0');
-score = dispatchScoreEvent(score, SCORE_EVENTS.PLAYER_POINT);
-assert.equal(getScoreDisplay(score), '40 - 0');
-
 score = dispatchScoreEvent(score, SCORE_EVENTS.OPPONENT_POINT);
 assert.equal(getScoreDisplay(score), '40 - 15');
 score = dispatchScoreEvent(score, SCORE_EVENTS.OPPONENT_POINT);

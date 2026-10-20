@@ -5,7 +5,9 @@
     <text class="session-status">{{ sessionStatus }}</text>
     <text class="quick-label" if="{{ currentScreen === 'QUICK_RESULT' }}">Duration</text>
     <text class="elapsed-status">{{ elapsedTime }}</text>
-    <text class="score-label" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">Score:</text>
+    <text class="game-label" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">Games</text>
+    <text class="game-display" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">{{ gameDisplay }}</text>
+    <text class="score-label" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">Points</text>
     <text class="score-display" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">{{ scoreDisplay }}</text>
     <div class="control-row" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">
         <div class="score-control" onclick="onPlayerPoint">
@@ -41,6 +43,9 @@
     </div>
     <text class="quick-metric" if="{{ currentScreen === 'QUICK_RESULT' }}">{{ quickHeartRate }}</text>
     <text class="quick-metric" if="{{ currentScreen === 'QUICK_RESULT' }}">{{ quickSwingCount }}</text>
+    <text class="quick-label" if="{{ currentScreen === 'QUICK_RESULT' }}">Games</text>
+    <text class="quick-metric" if="{{ currentScreen === 'QUICK_RESULT' }}">{{ quickGameScore }}</text>
+    <text class="quick-label" if="{{ currentScreen === 'QUICK_RESULT' }}">Points</text>
     <text class="quick-metric" if="{{ currentScreen === 'QUICK_RESULT' }}">{{ quickScore }}</text>
     <div class="start" if="{{ currentScreen === 'QUICK_RESULT' }}" onclick="onDone">
         <text class="start-label">Done</text>

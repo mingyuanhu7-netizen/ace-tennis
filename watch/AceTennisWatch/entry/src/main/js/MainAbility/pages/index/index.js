@@ -9,6 +9,7 @@ import {
 import {
     SCORE_EVENTS,
     dispatchScoreEvent,
+    getGameDisplay,
     getScoreDisplay
 } from '../../state/tennis-score.js';
 
@@ -18,9 +19,11 @@ export default {
         lastEvent: null,
         sessionStatus: '',
         elapsedTime: '',
+        gameDisplay: '',
         scoreDisplay: '',
         quickHeartRate: '',
         quickSwingCount: '',
+        quickGameScore: '',
         quickScore: ''
     },
     onInit() {
@@ -29,9 +32,11 @@ export default {
             ? 'SESSION OK'
             : 'SESSION ERROR';
         this.elapsedTime = formatElapsedTime(0);
+        this.gameDisplay = getGameDisplay(this.runtimeSession);
         this.scoreDisplay = getScoreDisplay(this.runtimeSession);
         this.quickHeartRate = '';
         this.quickSwingCount = '';
+        this.quickGameScore = '';
         this.quickScore = '';
         this.timerHandle = null;
     },
@@ -116,6 +121,7 @@ export default {
         if (this.currentScreen === WORKOUT_STATES.QUICK_RESULT) {
             this.quickHeartRate = `${this.runtimeSession.mockHeartRate} BPM`;
             this.quickSwingCount = `${this.runtimeSession.mockSwingCount} SWINGS`;
+            this.quickGameScore = this.gameDisplay;
             this.quickScore = this.scoreDisplay;
         }
     },
@@ -134,9 +140,11 @@ export default {
         this.currentScreen = this.runtimeSession.state;
         this.sessionStatus = 'SESSION OK';
         this.elapsedTime = formatElapsedTime(0);
+        this.gameDisplay = getGameDisplay(this.runtimeSession);
         this.scoreDisplay = getScoreDisplay(this.runtimeSession);
         this.quickHeartRate = '';
         this.quickSwingCount = '';
+        this.quickGameScore = '';
         this.quickScore = '';
     },
     refreshElapsedTime() {
@@ -149,6 +157,7 @@ export default {
             return;
         }
         this.runtimeSession = dispatchScoreEvent(this.runtimeSession, event);
+        this.gameDisplay = getGameDisplay(this.runtimeSession);
         this.scoreDisplay = getScoreDisplay(this.runtimeSession);
     },
     startTimer() {

@@ -40,6 +40,18 @@
   font-size: 14px;
   text-align: center;
 }
+.game-label {
+  width: 220px;
+  margin-top: 4px;
+  font-size: 14px;
+  text-align: center;
+}
+.game-display {
+  width: 220px;
+  margin-top: 2px;
+  font-size: 20px;
+  text-align: center;
+}
 .score-display {
   width: 220px;
   margin-top: 2px;
