@@ -3,7 +3,8 @@ import {
     createWorkoutSession,
     dispatchWorkoutEvent,
     formatElapsedTime,
-    getElapsedActiveMs
+    getElapsedActiveMs,
+    resetWorkoutSession
 } from '../../state/workout-session.js';
 
 export default {
@@ -104,6 +105,25 @@ export default {
             this.quickSwingCount = `${this.runtimeSession.mockSwingCount} SWINGS`;
             this.quickScore = this.runtimeSession.mockScoreDisplay;
         }
+    },
+    onDone() {
+        if (this.runtimeSession.state !== WORKOUT_STATES.QUICK_RESULT) {
+            return;
+        }
+        this.lastEvent = WORKOUT_EVENTS.DONE;
+        this.runtimeSession = dispatchWorkoutEvent(
+            this.runtimeSession,
+            WORKOUT_EVENTS.DONE,
+            Date.now()
+        );
+        this.stopTimer();
+        this.runtimeSession = resetWorkoutSession();
+        this.currentScreen = this.runtimeSession.state;
+        this.sessionStatus = 'SESSION OK';
+        this.elapsedTime = formatElapsedTime(0);
+        this.quickHeartRate = '';
+        this.quickSwingCount = '';
+        this.quickScore = '';
     },
     refreshElapsedTime() {
         this.elapsedTime = formatElapsedTime(

@@ -12,9 +12,7 @@ const markup = readFileSync(
 assert.match(markup, /onclick="onConfirmFinish"/);
 assert.match(markup, /SESSION COMPLETE/);
 assert.match(markup, /Duration/);
-assert.doesNotMatch(markup, /onclick="onDone"/);
 assert.equal(typeof page.onConfirmFinish, 'function');
-assert.equal(typeof page.onDone, 'undefined');
 
 const originalDateNow = Date.now;
 const originalSetInterval = globalThis.setInterval;

@@ -30,4 +30,7 @@
     <text class="quick-metric" if="{{ currentScreen === 'QUICK_RESULT' }}">{{ quickHeartRate }}</text>
     <text class="quick-metric" if="{{ currentScreen === 'QUICK_RESULT' }}">{{ quickSwingCount }}</text>
     <text class="quick-metric" if="{{ currentScreen === 'QUICK_RESULT' }}">{{ quickScore }}</text>
+    <div class="start" if="{{ currentScreen === 'QUICK_RESULT' }}" onclick="onDone">
+        <text class="start-label">Done</text>
+    </div>
 </div>
