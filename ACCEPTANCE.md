@@ -15,7 +15,7 @@
 | REQ-PHONE-001 | PHONE | Phone supports home, history, workout detail, long-term statistics, settings and device management | User request | TODO | Product flow drafted; no implementation |
 | REQ-PHONE-002 | PHONE-COMPACT / PHONE-EXPANDED | Folded and expanded presentations are independently designed | User request | TODO | Separate product behavior documented; no visual design |
 | REQ-PHONE-003 | PHONE-COMPACT / PHONE-EXPANDED | Fold/unfold preserves applicable product state | AGENTS.md | DRAFT | Awaiting product approval |
-| REQ-STATE-001 | WATCH | Workout uses one authoritative explicit state machine | Product architecture proposal | DRAFT | Awaiting product approval |
+| REQ-STATE-001 | WATCH | Workout uses one authoritative explicit state machine | Product architecture proposal | PASS | Physical GT 5 Pro Phase 2 validation: Ready, Active, Paused, Finish Confirmation, Quick Result, transient Complete, reset, and a second zero-based session PASS |
 | REQ-X-001 | CROSS-DEVICE | Completed watch record reaches phone history and analysis flow through Queue, Retry, Dedup and ACK | User confirmation 2026-09-19 | TODO | Product scope confirmed; no implementation |
 | REQ-X-002 | CROSS-DEVICE | Watch workout continues without phone availability | Product architecture proposal | DRAFT | Awaiting product approval |
 | REQ-MVP-001 | SHARED | MVP excludes unapproved tennis metrics and real sensor integration | User constraint | TODO | Specifications inspected; no code exists |
@@ -57,7 +57,11 @@
 
 ## 5. Verification Matrix
 
-No tennis-product feature implementation verification exists. Platform feasibility is complete; current phase is `REAL_TENNIS_APP_MIGRATION`.
+| Scope | Result | Evidence |
+| --- | --- | --- |
+| GT 5 Pro Phase 2 Mock Session lifecycle | PASS | `AceTennis-P2-010-COMPLETE-RESET-API10-signed.hap`: full state lifecycle, timer pause/resume, finish confirmation, Quick Result, reset, and a second session starting at `00:00` physically validated |
+
+Platform feasibility and the Phase 2 workout state machine are complete. Real sensors, persistence, phone sync, history, and tennis algorithms remain unverified and out of this result's scope.
 
 ## 6. Product Approval Checklist
 
@@ -66,6 +70,6 @@ No tennis-product feature implementation verification exists. Platform feasibili
 - [ ] User flows approved.
 - [x] Phone Screen Map scope confirmed; visual design remains open.
 - [x] Watch Screen Map scope confirmed; visual design remains open.
-- [ ] Workout State Machine approved.
+- [x] Workout State Machine approved and physically validated on GT 5 Pro.
 - [x] Completed-record sync stages confirmed; protocol details remain open.
 - [ ] MVP scope approved.

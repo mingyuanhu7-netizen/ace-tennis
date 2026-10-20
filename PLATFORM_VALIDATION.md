@@ -100,6 +100,29 @@ The V3 signing chain used by the golden probe is verified. Signing passwords rem
 
 The physical target validated the Lite Wearable application model, installation, and launch using the API10 golden baseline.
 
+### Phase 2 Workout State Machine — Physical Validation
+
+| Validation | Result |
+| --- | --- |
+| Physical artifact | `AceTennis-P2-010-COMPLETE-RESET-API10-signed.hap` |
+| Install / launch | PASS |
+| Black screen, crash, or freeze | NO |
+| `READY → ACTIVE_WORKOUT` | PASS |
+| Pause / resume and accumulated timer continuity | PASS |
+| Finish confirmation, including return to originating state | PASS |
+| `FINISH_CONFIRMATION → QUICK_RESULT` | PASS |
+| Quick Result duration freezes | PASS |
+| Mock Quick Result values | PASS — `128 BPM`, `36 SWINGS`, `30 - 15` |
+| `QUICK_RESULT → COMPLETE → READY` | PASS — `COMPLETE` is transient |
+| New session starts at zero | PASS |
+| Duplicate / accelerated timer behavior | NO |
+
+`P2-010 = PASS`
+
+`PHASE_2_WORKOUT_STATE_MACHINE = PASS`
+
+The Phase 2 result validates only the Mock Session lifecycle on the physical GT 5 Pro. It does not validate real sensors, persistence, phone sync, historical records, or tennis algorithms.
+
 ## 4. Historical Validation Path — Superseded
 
 ```text
