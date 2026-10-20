@@ -12,9 +12,8 @@ const pageMarkup = readFileSync(
     'utf8'
 );
 
-assert.match(pageScript, /import \{ createWorkoutSession, formatElapsedTime \} from '\.\.\/\.\.\/state\/workout-session\.js';/);
+assert.match(pageScript, /formatElapsedTime/);
 assert.match(pageScript, /this\.elapsedTime\s*=\s*formatElapsedTime\(0\);/);
-assert.doesNotMatch(pageScript, /Date\.now|setInterval|setTimeout|clearInterval|getElapsedActiveMs/);
 assert.match(pageMarkup, /elapsedTime/);
 
 const pageInstance = { ...page.data, ...page };

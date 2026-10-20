@@ -5,15 +5,27 @@
     <text class="session-status">{{ sessionStatus }}</text>
     <text class="quick-label" if="{{ currentScreen === 'QUICK_RESULT' }}">Duration</text>
     <text class="elapsed-status">{{ elapsedTime }}</text>
+    <text class="score-label" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">Score:</text>
+    <text class="score-display" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">{{ scoreDisplay }}</text>
+    <div class="control-row" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">
+        <div class="score-control" onclick="onPlayerPoint">
+            <text class="control-label">Player +</text>
+        </div>
+        <div class="score-control" onclick="onOpponentPoint">
+            <text class="control-label">Opponent +</text>
+        </div>
+    </div>
     <text class="confirmation-message" if="{{ currentScreen === 'FINISH_CONFIRMATION' }}">Finish session?</text>
     <div class="start" if="{{ currentScreen === 'READY' }}" onclick="onStart">
         <text class="start-label">Start</text>
     </div>
-    <div class="start" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}" onclick="onPause">
-        <text class="start-label">Pause</text>
-    </div>
-    <div class="start" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}" onclick="onRequestFinish">
-        <text class="start-label">Finish</text>
+    <div class="control-row" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">
+        <div class="score-control" onclick="onPause">
+            <text class="control-label">Pause</text>
+        </div>
+        <div class="score-control" onclick="onRequestFinish">
+            <text class="control-label">Finish</text>
+        </div>
     </div>
     <div class="start" if="{{ currentScreen === 'PAUSED' }}" onclick="onResume">
         <text class="start-label">Resume</text>

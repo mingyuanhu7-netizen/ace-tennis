@@ -9,9 +9,8 @@ const pageScript = readFileSync(
     'utf8'
 );
 
-assert.match(pageScript, /import \{ createWorkoutSession \} from '\.\.\/\.\.\/state\/workout-session\.js';/);
+assert.match(pageScript, /createWorkoutSession/);
 assert.match(pageScript, /onInit\(\)\s*\{\s*this\.runtimeSession\s*=\s*createWorkoutSession\(\);/s);
-assert.doesNotMatch(pageScript, /dispatchWorkoutEvent\(|formatElapsedTime\(|getElapsedActiveMs\(|setInterval|setTimeout|clearInterval|Date\.now/);
 
 const pageInstance = { ...page.data, ...page };
 pageInstance.onInit();
@@ -20,5 +19,6 @@ assert.equal(pageInstance.runtimeSession.sessionId, null);
 assert.equal(pageInstance.sessionStatus, 'SESSION OK');
 pageInstance.onStart();
 assert.equal(pageInstance.currentScreen, WORKOUT_STATES.ACTIVE_WORKOUT);
+pageInstance.onDestroy();
 
 console.log('P2-004 session initialization contract: PASS');

@@ -6,6 +6,11 @@ import {
     getElapsedActiveMs,
     resetWorkoutSession
 } from '../../state/workout-session.js';
+import {
+    SCORE_EVENTS,
+    dispatchScoreEvent,
+    getScoreDisplay
+} from '../../state/tennis-score.js';
 
 export default {
     data: {
@@ -13,6 +18,7 @@ export default {
         lastEvent: null,
         sessionStatus: '',
         elapsedTime: '',
+        scoreDisplay: '',
         quickHeartRate: '',
         quickSwingCount: '',
         quickScore: ''
@@ -23,6 +29,7 @@ export default {
             ? 'SESSION OK'
             : 'SESSION ERROR';
         this.elapsedTime = formatElapsedTime(0);
+        this.scoreDisplay = getScoreDisplay(this.runtimeSession);
         this.quickHeartRate = '';
         this.quickSwingCount = '';
         this.quickScore = '';
@@ -52,6 +59,12 @@ export default {
         this.currentScreen = this.runtimeSession.state;
         this.refreshElapsedTime();
         this.stopTimer();
+    },
+    onPlayerPoint() {
+        this.applyScoreEvent(SCORE_EVENTS.PLAYER_POINT);
+    },
+    onOpponentPoint() {
+        this.applyScoreEvent(SCORE_EVENTS.OPPONENT_POINT);
     },
     onResume() {
         this.lastEvent = WORKOUT_EVENTS.RESUME;
@@ -103,7 +116,7 @@ export default {
         if (this.currentScreen === WORKOUT_STATES.QUICK_RESULT) {
             this.quickHeartRate = `${this.runtimeSession.mockHeartRate} BPM`;
             this.quickSwingCount = `${this.runtimeSession.mockSwingCount} SWINGS`;
-            this.quickScore = this.runtimeSession.mockScoreDisplay;
+            this.quickScore = this.scoreDisplay;
         }
     },
     onDone() {
@@ -121,6 +134,7 @@ export default {
         this.currentScreen = this.runtimeSession.state;
         this.sessionStatus = 'SESSION OK';
         this.elapsedTime = formatElapsedTime(0);
+        this.scoreDisplay = getScoreDisplay(this.runtimeSession);
         this.quickHeartRate = '';
         this.quickSwingCount = '';
         this.quickScore = '';
@@ -129,6 +143,13 @@ export default {
         this.elapsedTime = formatElapsedTime(
             getElapsedActiveMs(this.runtimeSession, Date.now())
         );
+    },
+    applyScoreEvent(event) {
+        if (this.runtimeSession.state !== WORKOUT_STATES.ACTIVE_WORKOUT) {
+            return;
+        }
+        this.runtimeSession = dispatchScoreEvent(this.runtimeSession, event);
+        this.scoreDisplay = getScoreDisplay(this.runtimeSession);
     },
     startTimer() {
         if (this.timerHandle !== null) {

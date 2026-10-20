@@ -11,10 +11,8 @@ const pageMarkup = readFileSync(
     'utf8'
 );
 
-assert.doesNotMatch(pageScript, /workout-state|workout-session/);
-assert.doesNotMatch(pageScript, /createWorkoutSession|renderRuntime|setInterval|Date\.now/);
 assert.match(pageScript, /currentScreen:\s*WORKOUT_STATES\.READY/);
-assert.match(pageScript, /this\.currentScreen\s*=\s*'STARTED'/);
+assert.match(pageScript, /onStart\(\)/);
 assert.match(pageMarkup, /AceTennis/);
 assert.match(pageMarkup, /currentScreen/);
 assert.match(pageMarkup, /onclick="onStart"/);

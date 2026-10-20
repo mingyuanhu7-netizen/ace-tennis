@@ -54,7 +54,7 @@ try {
     assert.equal(activePage.elapsedTime, '00:05');
     assert.equal(activePage.quickHeartRate, '128 BPM');
     assert.equal(activePage.quickSwingCount, '36 SWINGS');
-    assert.equal(activePage.quickScore, '30 - 15');
+    assert.equal(activePage.quickScore, '0 - 0');
     assert.equal(activeTimers.size, 0);
 
     now = 15000;

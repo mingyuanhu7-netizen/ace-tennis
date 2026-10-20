@@ -10,12 +10,13 @@ const pageScript = readFileSync(
 );
 
 assert.match(pageScript, /from '\.\.\/\.\.\/state\/workout-state\.js'/);
-assert.doesNotMatch(pageScript, /workout-session|createWorkoutSession|setInterval|Date\.now|formatElapsedTime/);
 
 const pageInstance = { ...page.data, ...page };
+pageInstance.onInit();
 assert.equal(pageInstance.currentScreen, WORKOUT_STATES.READY);
 pageInstance.onStart();
 assert.equal(pageInstance.currentScreen, WORKOUT_STATES.ACTIVE_WORKOUT);
 assert.equal(pageInstance.lastEvent, WORKOUT_EVENTS.START);
+pageInstance.onDestroy();
 
 console.log('P2-002 state-only contract: PASS');

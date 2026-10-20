@@ -34,6 +34,39 @@
   font-size: 16px;
   text-align: center;
 }
+.score-label {
+  width: 220px;
+  margin-top: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+.score-display {
+  width: 220px;
+  margin-top: 2px;
+  font-size: 24px;
+  text-align: center;
+}
+.control-row {
+  width: 220px;
+  margin-top: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.score-control {
+  width: 104px;
+  height: 48px;
+  justify-content: center;
+  align-items: center;
+  background-color: #1464f4;
+  border-radius: 24px;
+}
+.control-label {
+  width: 104px;
+  color: #ffffff;
+  font-size: 16px;
+  text-align: center;
+}
 .quick-label {
   width: 220px;
   margin-top: 8px;

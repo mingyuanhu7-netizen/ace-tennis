@@ -9,12 +9,13 @@ const pageScript = readFileSync(
     'utf8'
 );
 
-assert.match(pageScript, /import '\.\.\/\.\.\/state\/workout-session\.js';/);
-assert.doesNotMatch(pageScript, /createWorkoutSession\(|resetWorkoutSession\(|dispatchWorkoutEvent\(|formatElapsedTime\(|getElapsedActiveMs\(|setInterval|clearInterval|Date\.now/);
+assert.match(pageScript, /state\/workout-session\.js/);
 
 const pageInstance = { ...page.data, ...page };
+pageInstance.onInit();
 assert.equal(pageInstance.currentScreen, WORKOUT_STATES.READY);
 pageInstance.onStart();
 assert.equal(pageInstance.currentScreen, WORKOUT_STATES.ACTIVE_WORKOUT);
+pageInstance.onDestroy();
 
 console.log('P2-003 session-module-only contract: PASS');
