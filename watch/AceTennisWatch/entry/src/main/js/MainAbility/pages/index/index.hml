@@ -9,10 +9,10 @@
     <text class="score-display" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">{{ scoreDisplay }}</text>
     <div class="control-row" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">
         <div class="score-control" onclick="onPlayerPoint">
-            <text class="control-label">Player +</text>
+            <text class="control-label">You +</text>
         </div>
         <div class="score-control" onclick="onOpponentPoint">
-            <text class="control-label">Opponent +</text>
+            <text class="control-label">Opp +</text>
         </div>
     </div>
     <text class="confirmation-message" if="{{ currentScreen === 'FINISH_CONFIRMATION' }}">Finish session?</text>
