@@ -36,11 +36,6 @@ score = dispatchScoreEvent(score, SCORE_EVENTS.OPPONENT_POINT);
 assert.equal(getScoreDisplay(score), '40 - 15');
 score = dispatchScoreEvent(score, SCORE_EVENTS.OPPONENT_POINT);
 assert.equal(getScoreDisplay(score), '40 - 30');
-score = dispatchScoreEvent(score, SCORE_EVENTS.OPPONENT_POINT);
-assert.equal(getScoreDisplay(score), '40 - 40');
-score = dispatchScoreEvent(score, SCORE_EVENTS.OPPONENT_POINT);
-assert.equal(getScoreDisplay(score), '40 - 40');
-
 const originalDateNow = Date.now;
 const originalSetInterval = globalThis.setInterval;
 const originalClearInterval = globalThis.clearInterval;

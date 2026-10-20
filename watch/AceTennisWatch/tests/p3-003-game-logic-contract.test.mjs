@@ -45,13 +45,13 @@ score = playerPoint(score);
 score = opponentPoint(score);
 score = opponentPoint(score);
 score = opponentPoint(score);
-assert.equal(getScoreDisplay(score), '40 - 40');
+assert.equal(getScoreDisplay(score), 'DEUCE');
 score = playerPoint(score);
 assert.equal(getGameDisplay(score), '1 - 1');
-assert.equal(getScoreDisplay(score), '40 - 40');
+assert.equal(getScoreDisplay(score), 'ADV YOU');
 score = opponentPoint(score);
 assert.equal(getGameDisplay(score), '1 - 1');
-assert.equal(getScoreDisplay(score), '40 - 40');
+assert.equal(getScoreDisplay(score), 'DEUCE');
 
 const originalDateNow = Date.now;
 const originalSetInterval = globalThis.setInterval;
