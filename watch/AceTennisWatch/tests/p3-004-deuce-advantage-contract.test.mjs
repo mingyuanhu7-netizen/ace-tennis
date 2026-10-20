@@ -94,6 +94,22 @@ try {
     assert.equal(pageInstance.scoreDisplay, '0 - 0');
     assert.equal(pageInstance.gameDisplay, '0 - 0');
     assert.equal(pageInstance.runtimeSession.pointMode, POINT_MODES.NORMAL);
+
+    const advantagePage = { ...page.data, ...page };
+    advantagePage.onInit();
+    advantagePage.onStart();
+    advantagePage.onPlayerPoint();
+    advantagePage.onPlayerPoint();
+    advantagePage.onPlayerPoint();
+    advantagePage.onOpponentPoint();
+    advantagePage.onOpponentPoint();
+    advantagePage.onOpponentPoint();
+    advantagePage.onPlayerPoint();
+    assert.equal(advantagePage.scoreDisplay, 'ADV YOU');
+    now = 7000;
+    advantagePage.onRequestFinish();
+    advantagePage.onConfirmFinish();
+    assert.equal(advantagePage.quickScore, 'ADV YOU');
 } finally {
     Date.now = originalDateNow;
     globalThis.setInterval = originalSetInterval;
