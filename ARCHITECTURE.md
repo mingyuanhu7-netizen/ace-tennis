@@ -106,17 +106,17 @@ NEEDS CONFIRMATION
 
 ## 9. Persistence
 
-Status: `NOT IMPLEMENTED — WATCH_SESSION_PERSISTENCE PLANNING`.
+Status: `P4-001 PHYSICAL CAPABILITY SPIKE COMPLETE — SESSION PERSISTENCE NOT IMPLEMENTED`.
 
-`COMPLETED = P3-006`
+`COMPLETED = P4-001`
 
 `CURRENT_PHASE = WATCH_SESSION_PERSISTENCE_PLANNING`
 
-`NEXT_IMPLEMENTATION_PHASE = WATCH_SESSION_PERSISTENCE`
+`NEXT_IMPLEMENTATION_PHASE = P4-002_SESSION_RECORD_MODEL`
 
 The next phase is limited to a local Watch session record and recovery design. It must preserve the Watch-owned session boundary and keep future synchronization transport-independent.
 
-Local SDK evidence: the installed Lite Wearable JS SDK declares the FA-model `@system.storage` API with `SystemCapability.DistributedDataManager.Preferences.Core.Lite`; the Lite Wearable device capability definition includes that capability. This is an SDK-declared candidate only. Its availability, lifecycle behavior, capacity, durability, and recovery behavior on the physical GT 5 Pro remain `NOT VERIFIED` and require a focused physical capability probe before production persistence is implemented.
+The installed Lite Wearable JS SDK declares the FA-model `@system.storage` API with `SystemCapability.DistributedDataManager.Preferences.Core.Lite`; the Lite Wearable device capability definition includes that capability. P4-001 additionally has user-confirmed GT 5 Pro physical evidence for missing-key read, JSON string write/read, app-restart persistence, overwrite/read-back, delete/read-back/restart-missing, and invalid-key error handling (`202; Invalid parameter`) without crash. This is a basic storage capability result, not a production Session Persistence implementation. Capacity, maximum value size, high-frequency writes, concurrent access, atomicity, power loss, watch reboot durability, and recovery behavior remain `NOT_TESTED`.
 
 The ArkTS `@ohos.data.preferences` and Android persistence APIs are not approved substitutes for this legacy Lite Wearable JS/HML/CSS project.
 
@@ -127,7 +127,7 @@ The ArkTS `@ohos.data.preferences` and Android persistence APIs are not approved
 **Proposed in-progress payload.**
 
 - `schemaVersion` — proposed, for forward-compatible parsing and Mate X7 transport payloads.
-- `sessionId` — proposed unique identifier; the Lite-compatible generation strategy is `NEEDS CONFIRMATION` until P4-001.
+- `sessionId` — proposed unique identifier; the Lite-compatible generation strategy remains `NEEDS CONFIRMATION` because P4-001 validated storage behavior, not identifier generation.
 - `sessionStatus` / `recordStatus` — proposed `IN_PROGRESS` or `COMPLETED` local-record state.
 - `startedAt`, `endedAt`, `elapsedActiveMs`, `pausedDurationMs`, `activeSegmentStartedAt`, and `finishReturnState` — `elapsedActiveMs` exists in current runtime; the other persistence representation is proposed.
 - `playerSets`, `opponentSets`, `playerGames`, `opponentGames`, point indices, `pointMode`, and `tiebreakPending` — implemented in runtime scoring; persistence is proposed.
@@ -141,17 +141,17 @@ The ArkTS `@ohos.data.preferences` and Android persistence APIs are not approved
 
 **Validation ladder before implementation.**
 
-1. Build an isolated Lite Wearable `@system.storage` capability probe using a short key and JSON string payload.
-2. Physically verify write, read-back, process/app restart, malformed-value handling, and clear/delete on the GT 5 Pro.
-3. Record actual capacity/error behavior; do not assume atomic transactions or Android-style storage semantics.
+1. **COMPLETE:** Build and physically validate the isolated Lite Wearable `@system.storage` capability probe for missing-key read, JSON write/read, app restart, overwrite, delete, and invalid-key error handling.
+2. Implement `P4-002_SESSION_RECORD_MODEL`: a pure `schemaVersion`-based record, serializer, parser, malformed-payload validation, score snapshot, mock-data source markers, and future-sync reservation fields. Do not write to device storage in this step.
+3. Record actual capacity/error behavior before a multi-record or checkpoint design; do not assume atomic transactions or Android-style storage semantics.
 4. Only then implement the session repository and run lifecycle/recovery regression tests.
 
 ### P4 Implementation Plan — Low to High Risk
 
 | Phase | Modification scope and key implementation | Automated test | Physical test and acceptance | Rollback and principal risk |
 | --- | --- | --- | --- | --- |
-| P4-001 | Isolated Lite Wearable `@system.storage` capability probe only; no AceTennis session code. | API-shape and JSON round-trip contract. | GT5 Pro write/read/delete after restart; artifact `AceTennis-P4-001-STORAGE-PROBE-API10-signed.hap`. | Remove the isolated probe; risk: SDK declaration differs from physical availability. |
-| P4-002 | Pure Session record model, serializer, parser, schema validation; no device writes. | Round-trip, malformed payload, schema-version, and score/Undo snapshot tests. | No physical feature claim required. | Revert model-only files; risk: model exceeds Lite storage limits. |
+| P4-001 | Isolated Lite Wearable `@system.storage` capability probe only; no AceTennis session code. **COMPLETE:** user GT5 Pro physical photos confirm missing-key read, JSON write/read, app-restart persistence, overwrite, delete, and expected invalid-key error handling. Tested artifact/source mapping is `UNKNOWN`. | API-shape and JSON round-trip contract. | USER_CONFIRMED_PASS; capacity, high-rate writes, power loss, reboot, and concurrency remain `NOT_TESTED`. | Retain the isolated probe; risk: verified behavior is narrower than production persistence requirements. |
+| P4-002 | **NEXT:** Pure Session record model, serializer, parser, schema validation; no device writes. Include `sessionId`, start/end timestamps, active/paused duration, session status, Sets/Games/Points, incomplete state, mock HR/Swing source markers, short-session retention policy, `schemaVersion`, and reserved future-sync fields. | Round-trip, malformed payload, schema-version, and score/Undo snapshot tests. | No physical feature claim required. | Revert model-only files; risk: model exceeds Lite storage limits. |
 | P4-003 | One completed Session save/read using only the P4-001-verified API. | Write-success, read-back, parse-failure, and short-session retention tests. | Save, close/reopen, and read one completed session on GT5 Pro. | Disable repository call behind one adapter; risk: write failure or partial data. |
 | P4-004 | Bounded multi-session completed-record index and list read. | Ordering, deduplication by `sessionId`, capacity boundary, and corrupt-entry isolation tests. | Create/read several local records on GT5 Pro. | Keep the single-record path; risk: capacity and read latency. |
 | P4-005 | Active Session checkpoint adapter at Start, score correction, Pause, Resume, Finish request, and confirm. | Trigger cadence, no timer-handle serialization, paused-duration, and no duplicate Session tests. | Start/pause/exit/reopen with one in-progress session. | Disable active checkpoints while retaining completed records; risk: battery impact and write cadence. |

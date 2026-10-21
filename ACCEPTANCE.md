@@ -63,6 +63,7 @@
 | GT 5 Pro Phase 3 P3-004 manual scoring | PASS | `AceTennis-P3-004-DEUCE-ADVANTAGE-API10-signed.hap`: manual point/game scoring, Deuce/Advantage transitions, game increment, and point reset physically validated |
 | GT 5 Pro Phase 3 P3-005 basic Set scoring | PASS | `AceTennis-P3-005-BASIC-SET-API10-signed.hap`: `5–3 → 6–3` and `6–5 → 7–5` Set awards, `5–5 → 6–5` no-set boundary, `6–6 → TIEBREAK_PENDING` input blocking, Quick Result Set/Game display, and new-session scoring reset physically validated |
 | GT 5 Pro Phase 3 P3-006 score Undo / correction | PASS | User-reported physical GT 5 Pro acceptance: TB Pending, Game, and Set Undo; score-button recovery; Paused Undo timer continuity; and Workout lifecycle regression all PASS. Repository artifact: `AceTennis-P3-006-UNDO-API10-signed.hap`; tested-device hash linkage and source commit linkage are UNKNOWN. |
+| GT 5 Pro Phase 4 P4-001 `@system.storage` capability spike | PASS | User physical-device photos confirm missing-key read, JSON write/read, restart persistence, overwrite/read-back, delete/read-back/restart-missing, and expected invalid-key error `202; Invalid parameter`, with no crash. Tested HAP, SHA-256, and source mapping are UNKNOWN. |
 
 ### P3-006 Detailed Physical Acceptance
 
@@ -74,7 +75,26 @@
 | Paused Undo | Corrects score while preserving `PAUSED` and stopped timing | PASS | USER_CONFIRMED_PHYSICAL_PASS | PASS |
 | Workout lifecycle regression | Ready → Active → Paused → Active → Finish Confirmation → Quick Result → Ready remains valid | PASS | USER_CONFIRMED_PHYSICAL_PASS | PASS |
 
-Platform feasibility and the Phase 2 workout state machine are complete. `COMPLETED = P3-006`; `CURRENT_PHASE = WATCH_SESSION_PERSISTENCE_PLANNING`; `NEXT_IMPLEMENTATION_PHASE = WATCH_SESSION_PERSISTENCE`. Tiebreak implementation, real sensors, phone sync, history, and tennis algorithms remain out of this result's scope.
+Historical P3-006 scope closure: platform feasibility and the Phase 2 workout state machine were complete at that point. This P3-specific record does not supersede the later P4-001 storage acceptance. Tiebreak implementation, real sensors, phone sync, history, and tennis algorithms remain out of the P3 result's scope.
+
+### P4-001 Detailed Physical Acceptance — Lite Wearable Storage API
+
+| Function | Physical result | Evidence type | Acceptance |
+| --- | --- | --- | --- |
+| Missing-key read | PASS | USER_CONFIRMED_PHYSICAL_PASS / USER_PHYSICAL_DEVICE_PHOTOS | PASS |
+| JSON write | PASS | USER_CONFIRMED_PHYSICAL_PASS / USER_PHYSICAL_DEVICE_PHOTOS | PASS |
+| JSON read | PASS — `JSON: WRITE` | USER_CONFIRMED_PHYSICAL_PASS / USER_PHYSICAL_DEVICE_PHOTOS | PASS |
+| App restart persistence | PASS — startup value `FOUND` | USER_CONFIRMED_PHYSICAL_PASS / USER_PHYSICAL_DEVICE_PHOTOS | PASS |
+| Overwrite and read-back | PASS — `JSON: OVERWRITE` | USER_CONFIRMED_PHYSICAL_PASS / USER_PHYSICAL_DEVICE_PHOTOS | PASS |
+| Delete, read-back, and restart-missing | PASS — `MISSING` after delete and restart | USER_CONFIRMED_PHYSICAL_PASS / USER_PHYSICAL_DEVICE_PHOTOS | PASS |
+| Invalid-key error handling | PASS — expected failure reported as `202; Invalid parameter` without crash | USER_CONFIRMED_PHYSICAL_PASS / USER_PHYSICAL_DEVICE_PHOTOS | PASS |
+| App stability | PASS — install and launch succeed; no crash | USER_CONFIRMED_PHYSICAL_PASS / USER_PHYSICAL_DEVICE_PHOTOS | PASS |
+
+`P4_001_PHYSICAL_ACCEPTANCE = PASS`
+
+This verifies only the observed basic `@system.storage` behavior on the physical GT 5 Pro. It does not make a tool-only build result into physical evidence, and it does not implement Session Persistence. The exact installed HAP, artifact SHA-256, and source commit relationship remain `UNKNOWN`.
+
+`COMPLETED = P4-001`; `CURRENT_PHASE = WATCH_SESSION_PERSISTENCE_PLANNING`; `NEXT_IMPLEMENTATION_PHASE = P4-002_SESSION_RECORD_MODEL`.
 
 ## 6. Product Approval Checklist
 

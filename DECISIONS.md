@@ -20,6 +20,7 @@
 | DEC-PLATFORM-003 | GT 5 Pro Lite Wearable API10 physical baseline | WATCH | APPROVED / PASS |
 | DEC-SCORING-001 | 6–6 tiebreak boundary | WATCH | APPROVED BY USER DIRECTION |
 | DEC-SCORING-002 | Basic manual scoring and one-event Undo acceptance boundary | WATCH | APPROVED / PASS |
+| DEC-PERSISTENCE-001 | Lite Wearable storage foundation for future Session Persistence | WATCH | APPROVED / PHYSICAL VALIDATION PASS |
 
 ## DEC-001 — Device Responsibility Boundary
 
@@ -278,6 +279,28 @@ User-reported physical GT 5 Pro P3-006 acceptance: TB Pending, Game, and Set Und
 Repository artifact: `AceTennis-P3-006-UNDO-API10-signed.hap`; current repository SHA-256 is recorded in `PLATFORM_VALIDATION.md`. Tested-device hash linkage and source commit linkage are `UNKNOWN`.
 
 **Affected specifications:** `PRODUCT_SPEC.md`, `UI_SPEC_WATCH.md`, `ACCEPTANCE.md`, `PLATFORM_VALIDATION.md`
+
+## DEC-PERSISTENCE-001 — Lite Wearable Storage Foundation for Future Session Persistence
+
+**Date:** 2026-10-21
+
+**Status:** APPROVED / PHYSICAL VALIDATION PASS
+
+**Scope:** WATCH local persistence foundation
+
+**Decision:**
+
+- Future AceTennis Watch Session Persistence may use the physically validated Lite Wearable `@system.storage` API as its current storage foundation.
+- Production session code must keep storage behind a Watch-local repository/adapter boundary; no Android, ArkTS, Smart Wearable, phone-sync, or transport API is implied by this decision.
+- The next minimal-risk implementation task is `P4-002_SESSION_RECORD_MODEL`: a pure versioned record, serializer, parser, and validation layer before any production device write.
+
+**Physical evidence and boundary:**
+
+- User physical-device photos on HUAWEI WATCH GT 5 Pro confirm missing-key read, JSON write/read, persistence after app restart, overwrite/read-back, delete/read-back/restart-missing, and expected invalid-key error handling (`202; Invalid parameter`) without crash.
+- This decision does **not** validate capacity or maximum value size, high-frequency writes, concurrent access, atomicity, unexpected power loss, watch reboot persistence, background behavior, schema migration, or session-recovery policy.
+- The exact tested HAP, artifact SHA-256, and source-commit linkage are `UNKNOWN`; none is inferred from repository candidates.
+
+**Affected specifications:** `PLATFORM_VALIDATION.md`, `ACCEPTANCE.md`, `ARCHITECTURE.md`, `DATA_CONTRACT.md`
 
 ## Decision Template
 

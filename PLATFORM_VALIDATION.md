@@ -182,15 +182,36 @@ This validates the basic Set-scoring boundary and `TIEBREAK_PENDING` behavior. A
 
 This is physical GT 5 Pro evidence, not simulator or static-only evidence. It validates the current manual-scoring correction scope only; Redo, tiebreak, persistence, sensors, and phone synchronization remain outside the result.
 
+### Phase 4 P4-001 Lite Wearable Storage API Spike — Physical Validation
+
+| Validation | Result |
+| --- | --- |
+| Physical device | HUAWEI WATCH GT 5 Pro |
+| Storage API | `@system.storage` |
+| Evidence source | `USER_PHYSICAL_DEVICE_PHOTOS` |
+| Physical install / launch | PASS — user confirmed |
+| Missing-key read | PASS |
+| JSON write / read | PASS |
+| Persistence after app restart | PASS |
+| Overwrite / read-back | PASS |
+| Delete / read-back / restart-missing | PASS |
+| Invalid-key error handling | PASS — expected `202; Invalid parameter` |
+| Crash or freeze | NO |
+| Tested-device artifact / SHA-256 / source commit | UNKNOWN — the user did not identify the installed HAP, its hash, or an exact source mapping |
+
+`P4_001_PHYSICAL_ACCEPTANCE = PASS`
+
+This is user-confirmed GT 5 Pro physical-device evidence, not simulator, static, or build-only evidence. It validates basic `@system.storage` string/JSON read, write, overwrite, delete, and app-restart persistence. Capacity limits, large payloads, high-frequency writes, concurrent access, atomicity, power-loss or watch-reboot durability, and session-recovery policy remain `NOT_TESTED`.
+
 ### Current Engineering Phase
 
-`COMPLETED = P3-006`
+`COMPLETED = P4-001`
 
 `CURRENT_PHASE = WATCH_SESSION_PERSISTENCE_PLANNING`
 
-`NEXT_IMPLEMENTATION_PHASE = WATCH_SESSION_PERSISTENCE`
+`NEXT_IMPLEMENTATION_PHASE = P4-002_SESSION_RECORD_MODEL`
 
-Phase 3 manual point, game, deuce, advantage, basic Set scoring, and single-event score correction are physically validated through P3-006. Real sensors, phone synchronization, and tiebreak implementation remain unverified.
+Phase 3 manual point, game, deuce, advantage, basic Set scoring, and single-event score correction are physically validated through P3-006. P4-001 establishes the physical GT 5 Pro storage capability prerequisite only; Session Persistence itself is not implemented. Real sensors, phone synchronization, and tiebreak implementation remain unverified.
 
 ## 4. Historical Validation Path — Superseded
 
