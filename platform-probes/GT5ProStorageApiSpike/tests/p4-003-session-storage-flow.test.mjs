@@ -3,6 +3,7 @@ import {
     COMPLETED_SESSION_STORAGE_KEY,
     createCompletedSessionTestRecord,
     readCompletedSession,
+    runWriteDiagnostic,
     saveCompletedSession,
     verifyCompletedSession
 } from '../entry/src/main/js/MainAbility/storage/session-storage-flow.js';
@@ -120,3 +121,20 @@ assert.equal(result.result, 'FAIL');
 assert.equal(result.code, 'FIELD_MISMATCH');
 
 console.log('P4-003 completed session storage flow: PASS');
+
+const diagnosticStorage = new FakeStorage();
+let diagnosticResult;
+runWriteDiagnostic(diagnosticStorage, expected, (value) => {
+    diagnosticResult = value;
+});
+assert.equal(diagnosticResult.result, 'PASS');
+assert.deepEqual(diagnosticResult.steps.map((step) => step.label), ['A_SIMPLE_JSON', 'B_SESSION_RECORD']);
+assert.equal(diagnosticResult.steps[0].valueType, 'string');
+assert.equal(diagnosticResult.steps[1].valueType, 'string');
+assert.equal(diagnosticResult.steps[0].error, 'NONE');
+assert.equal(diagnosticResult.steps[1].error, 'NONE');
+assert.equal(diagnosticResult.steps[1].jsonValid, true);
+assert.equal(diagnosticResult.steps[1].modelValid, true);
+assert.equal(diagnosticResult.steps[0].byteLength > 0, true);
+assert.equal(diagnosticResult.steps[1].byteLength > diagnosticResult.steps[0].byteLength, true);
+console.log('P4-003 write A/B diagnostic: PASS');

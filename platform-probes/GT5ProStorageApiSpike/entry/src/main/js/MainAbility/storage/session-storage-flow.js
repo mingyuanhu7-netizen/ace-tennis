@@ -10,6 +10,7 @@ import { createPointScore } from '../../../../../../../../watch/AceTennisWatch/e
 
 export const COMPLETED_SESSION_STORAGE_KEY = 'at_p4_session_001';
 export const MISSING_SESSION_VALUE = '__P4_003_MISSING__';
+export const SIMPLE_DIAGNOSTIC_VALUE = '{"probe":"P4-003-R02","value":"SIMPLE"}';
 
 const TEST_RECORD_STARTED_AT = 1735689600000;
 const TEST_RECORD_ENDED_AT = 1735689740000;
@@ -73,6 +74,70 @@ export function saveCompletedSession(storage, record, onResult) {
         },
         fail: function(data, code) {
             onResult(failure('SAVE', 'STORAGE_SET_FAILED', formatStorageError(data, code)));
+        }
+    });
+}
+
+export function runWriteDiagnostic(storage, record, onComplete) {
+    const steps = [];
+    const simpleValue = SIMPLE_DIAGNOSTIC_VALUE;
+    const sessionValue = serializeSessionRecord(record);
+
+    function finish() {
+        const passed = steps.length === 2 && steps[0].result === 'PASS' && steps[1].result === 'PASS';
+        onComplete({ result: passed ? 'PASS' : 'FAIL', steps: steps });
+    }
+
+    function writeSessionValue() {
+        const modelValidation = validateSessionRecord(record);
+        let jsonValid = false;
+        try {
+            JSON.parse(sessionValue);
+            jsonValid = true;
+        } catch (error) {
+            jsonValid = false;
+        }
+        if (modelValidation.valid !== true || jsonValid !== true) {
+            steps.push(diagnosticFailure('B_SESSION_RECORD', sessionValue, jsonValid, modelValidation.valid === true, 'PREWRITE_VALIDATION'));
+            finish();
+            return;
+        }
+        storage.set({
+            key: COMPLETED_SESSION_STORAGE_KEY,
+            value: sessionValue,
+            success: function() {
+                steps.push(diagnosticSuccess('B_SESSION_RECORD', sessionValue, true, true));
+                finish();
+            },
+            fail: function(data, code) {
+                steps.push(diagnosticFailure('B_SESSION_RECORD', sessionValue, true, true, formatStorageError(data, code)));
+                finish();
+            }
+        });
+    }
+
+    let simpleJsonValid = false;
+    try {
+        JSON.parse(simpleValue);
+        simpleJsonValid = true;
+    } catch (error) {
+        simpleJsonValid = false;
+    }
+    if (simpleJsonValid !== true) {
+        steps.push(diagnosticFailure('A_SIMPLE_JSON', simpleValue, false, null, 'PREWRITE_JSON'));
+        writeSessionValue();
+        return;
+    }
+    storage.set({
+        key: COMPLETED_SESSION_STORAGE_KEY,
+        value: simpleValue,
+        success: function() {
+            steps.push(diagnosticSuccess('A_SIMPLE_JSON', simpleValue, true, null));
+            writeSessionValue();
+        },
+        fail: function(data, code) {
+            steps.push(diagnosticFailure('A_SIMPLE_JSON', simpleValue, true, null, formatStorageError(data, code)));
+            writeSessionValue();
         }
     });
 }
@@ -167,4 +232,46 @@ function formatStorageError(data, code) {
         return data ? String(data) : 'UNKNOWN';
     }
     return String(code) + ': ' + (data ? String(data) : 'UNKNOWN');
+}
+
+function diagnosticSuccess(label, value, jsonValid, modelValid) {
+    return {
+        label: label,
+        result: 'PASS',
+        error: 'NONE',
+        valueType: typeof value,
+        byteLength: utf8ByteLength(value),
+        jsonValid: jsonValid,
+        modelValid: modelValid
+    };
+}
+
+function diagnosticFailure(label, value, jsonValid, modelValid, error) {
+    return {
+        label: label,
+        result: 'FAIL',
+        error: error || 'UNKNOWN',
+        valueType: typeof value,
+        byteLength: utf8ByteLength(value),
+        jsonValid: jsonValid,
+        modelValid: modelValid
+    };
+}
+
+function utf8ByteLength(value) {
+    let length = 0;
+    for (let index = 0; index < value.length; index += 1) {
+        const code = value.charCodeAt(index);
+        if (code < 0x80) {
+            length += 1;
+        } else if (code < 0x800) {
+            length += 2;
+        } else if (code >= 0xD800 && code <= 0xDBFF && index + 1 < value.length) {
+            length += 4;
+            index += 1;
+        } else {
+            length += 3;
+        }
+    }
+    return length;
 }

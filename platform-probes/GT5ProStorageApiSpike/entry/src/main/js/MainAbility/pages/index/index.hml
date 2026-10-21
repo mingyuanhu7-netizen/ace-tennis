@@ -20,6 +20,9 @@
     <div class="action" if="{{ pageMode === 'OPERATIONS' }}" onclick="onRead">
         <text class="action-label">READ</text>
     </div>
+    <div class="action" if="{{ pageMode === 'OPERATIONS' }}" onclick="onShowDiagnostic">
+        <text class="action-label">A/B WRITE</text>
+    </div>
     <div class="back" if="{{ pageMode === 'OPERATIONS' }}" onclick="onShowStatus">
         <text class="back-label">STATUS</text>
     </div>
@@ -36,6 +39,18 @@
         <text class="action-label">VERIFY</text>
     </div>
     <div class="back" if="{{ pageMode === 'RESULT' }}" onclick="onShowOperations">
+        <text class="back-label">BACK</text>
+    </div>
+
+    <text class="title" if="{{ pageMode === 'DIAGNOSTIC' }}">WRITE DIAGNOSTIC</text>
+    <text class="status" if="{{ pageMode === 'DIAGNOSTIC' }}">A: SIMPLE JSON</text>
+    <text class="info" if="{{ pageMode === 'DIAGNOSTIC' }}">{{ diagnosticA }}</text>
+    <text class="status" if="{{ pageMode === 'DIAGNOSTIC' }}">B: SESSION JSON</text>
+    <text class="info" if="{{ pageMode === 'DIAGNOSTIC' }}">{{ diagnosticB }}</text>
+    <div class="action" if="{{ pageMode === 'DIAGNOSTIC' }}" onclick="onRunDiagnostic">
+        <text class="action-label">RUN A/B</text>
+    </div>
+    <div class="back" if="{{ pageMode === 'DIAGNOSTIC' }}" onclick="onShowOperations">
         <text class="back-label">BACK</text>
     </div>
 </div>

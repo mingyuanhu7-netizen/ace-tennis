@@ -2,6 +2,7 @@ import storage from '@system.storage';
 import {
     createCompletedSessionTestRecord,
     readCompletedSession,
+    runWriteDiagnostic,
     saveCompletedSession,
     verifyCompletedSession
 } from '../../storage/session-storage-flow.js';
@@ -18,6 +19,8 @@ export default {
         detailDuration: '-',
         detailSets: '-',
         detailGames: '-',
+        diagnosticA: 'NOT_RUN',
+        diagnosticB: 'NOT_RUN',
         pageMode: 'STATUS'
     },
 
@@ -59,6 +62,21 @@ export default {
         this.pageMode = 'STATUS';
     },
 
+    onShowDiagnostic() {
+        this.pageMode = 'DIAGNOSTIC';
+    },
+
+    onRunDiagnostic() {
+        const page = this;
+        runWriteDiagnostic(storage, this.expectedRecord, function(result) {
+            page.diagnosticA = formatDiagnosticStep(result.steps[0]);
+            page.diagnosticB = formatDiagnosticStep(result.steps[1]);
+            page.lastOperation = 'A_THEN_B';
+            page.lastResult = result.result;
+            page.lastError = result.result === 'PASS' ? 'NONE' : 'SEE_A_B';
+        });
+    },
+
     onSave() {
         const page = this;
         saveCompletedSession(storage, this.expectedRecord, function(result) {
@@ -98,3 +116,10 @@ export default {
         this.detailGames = String(record.score.playerGames) + '-' + String(record.score.opponentGames);
     }
 };
+
+function formatDiagnosticStep(step) {
+    if (!step) {
+        return 'NOT_RUN';
+    }
+    return step.result + ' ' + step.error + ' ' + step.valueType + ' ' + String(step.byteLength) + 'B';
+}
