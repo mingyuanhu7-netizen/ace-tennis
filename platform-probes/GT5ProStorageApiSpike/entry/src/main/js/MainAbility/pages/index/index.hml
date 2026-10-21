@@ -1,15 +1,49 @@
 <div class="container">
-    <text class="title">{{ title }}</text>
-    <text class="key">KEY: {{ keyLabel }}</text>
-    <text class="status">STARTUP: {{ startupRead }}</text>
-    <text class="status">OP: {{ lastOperation }}</text>
-    <text class="status">RESULT: {{ lastResult }}</text>
-    <text class="error">ERROR: {{ lastError }}</text>
-    <div class="controls">
-        <text class="control" onclick="onWrite">WRITE</text>
-        <text class="control" onclick="onRead">READ</text>
-        <text class="control" onclick="onOverwrite">OVERWRITE</text>
-        <text class="control" onclick="onDelete">DELETE</text>
-        <text class="control secondary" onclick="onInvalidKey">BAD KEY</text>
+    <div class="screen" if="{{ pageMode === 'STATUS' }}">
+        <text class="title">{{ title }}</text>
+        <text class="key">KEY: {{ keyLabel }}</text>
+        <text class="status">STARTUP: {{ startupRead }}</text>
+        <text class="status">OP: {{ lastOperation }}</text>
+        <text class="status">RESULT: {{ lastResult }}</text>
+        <text class="error">ERROR: {{ lastError }}</text>
+        <div class="action" onclick="onShowOperations">
+            <text class="action-label">OPERATIONS</text>
+        </div>
+    </div>
+    <div class="screen" if="{{ pageMode === 'OPERATIONS' }}">
+        <text class="title">STORAGE TEST</text>
+        <text class="status">OP: {{ lastOperation }}</text>
+        <text class="status">RESULT: {{ lastResult }}</text>
+        <text class="error">ERROR: {{ lastError }}</text>
+        <div class="action" onclick="onRead">
+            <text class="action-label">READ</text>
+        </div>
+        <div class="action" onclick="onWrite">
+            <text class="action-label">WRITE</text>
+        </div>
+        <div class="action secondary" onclick="onShowAdvanced">
+            <text class="action-label">MORE</text>
+        </div>
+        <div class="back" onclick="onShowStatus">
+            <text class="back-label">STATUS</text>
+        </div>
+    </div>
+    <div class="screen" if="{{ pageMode === 'ADVANCED' }}">
+        <text class="title">STORAGE MORE</text>
+        <text class="status">OP: {{ lastOperation }}</text>
+        <text class="status">RESULT: {{ lastResult }}</text>
+        <text class="error">ERROR: {{ lastError }}</text>
+        <div class="action" onclick="onOverwrite">
+            <text class="action-label">OVERWRITE</text>
+        </div>
+        <div class="action" onclick="onDelete">
+            <text class="action-label">DELETE</text>
+        </div>
+        <div class="action secondary" onclick="onInvalidKey">
+            <text class="action-label">BAD KEY</text>
+        </div>
+        <div class="back" onclick="onShowOperations">
+            <text class="back-label">BACK</text>
+        </div>
     </div>
 </div>

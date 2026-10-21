@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import {
     MISSING_VALUE,
     PROBE_KEY,
@@ -34,3 +35,19 @@ assert.equal(state.lastError, '401: bad key');
 assert.equal(formatFailure(undefined, undefined), 'UNKNOWN');
 
 console.log('P4-001 storage probe contract: PASS');
+
+const hmlPath = new URL('../entry/src/main/js/MainAbility/pages/index/index.hml', import.meta.url);
+const cssPath = new URL('../entry/src/main/js/MainAbility/pages/index/index.css', import.meta.url);
+const pagePath = new URL('../entry/src/main/js/MainAbility/pages/index/index.js', import.meta.url);
+const hml = readFileSync(hmlPath, 'utf8');
+const css = readFileSync(cssPath, 'utf8');
+const page = readFileSync(pagePath, 'utf8');
+
+assert.match(hml, /pageMode === 'STATUS'/);
+assert.match(hml, /pageMode === 'OPERATIONS'/);
+for (const action of ['READ', 'WRITE', 'OVERWRITE', 'DELETE', 'BAD KEY']) {
+    assert.match(hml, new RegExp('>' + action + '<'));
+}
+assert.match(page, /onShowOperations\(\)/);
+assert.match(page, /onShowStatus\(\)/);
+assert.doesNotMatch(css, /flex-wrap|overflow|font-weight|lines|line-height/);

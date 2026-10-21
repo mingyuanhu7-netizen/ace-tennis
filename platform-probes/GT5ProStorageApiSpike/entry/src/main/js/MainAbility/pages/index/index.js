@@ -16,7 +16,8 @@ export default {
         lastOperation: 'NOT_RUN',
         lastResult: 'NOT_RUN',
         lastError: 'NONE',
-        startupRead: 'PENDING'
+        startupRead: 'PENDING',
+        pageMode: 'STATUS'
     },
 
     onInit() {
@@ -44,6 +45,18 @@ export default {
                 page.applyViewState(recordFailure(createProbeViewState(), 'STARTUP_READ', data, code));
             }
         });
+    },
+
+    onShowOperations() {
+        this.pageMode = 'OPERATIONS';
+    },
+
+    onShowAdvanced() {
+        this.pageMode = 'ADVANCED';
+    },
+
+    onShowStatus() {
+        this.pageMode = 'STATUS';
     },
 
     onWrite() {
