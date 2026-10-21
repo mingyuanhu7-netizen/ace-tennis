@@ -1,0 +1,15 @@
+<div class="container">
+    <text class="title">{{ title }}</text>
+    <text class="key">KEY: {{ keyLabel }}</text>
+    <text class="status">STARTUP: {{ startupRead }}</text>
+    <text class="status">OP: {{ lastOperation }}</text>
+    <text class="status">RESULT: {{ lastResult }}</text>
+    <text class="error">ERROR: {{ lastError }}</text>
+    <div class="controls">
+        <text class="control" onclick="onWrite">WRITE</text>
+        <text class="control" onclick="onRead">READ</text>
+        <text class="control" onclick="onOverwrite">OVERWRITE</text>
+        <text class="control" onclick="onDelete">DELETE</text>
+        <text class="control secondary" onclick="onInvalidKey">BAD KEY</text>
+    </div>
+</div>
