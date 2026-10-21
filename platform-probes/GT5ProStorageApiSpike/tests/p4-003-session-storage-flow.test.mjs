@@ -37,6 +37,7 @@ class FakeStorage {
 const storage = new FakeStorage();
 const expected = createCompletedSessionTestRecord();
 
+assert.equal(COMPLETED_SESSION_STORAGE_KEY, 'at_p4_session_001');
 assert.equal(COMPLETED_SESSION_STORAGE_KEY.length <= 32, true);
 assert.equal(expected.sessionId, 'P4-003-TEST-001');
 assert.equal(expected.recordStatus, 'COMPLETED');

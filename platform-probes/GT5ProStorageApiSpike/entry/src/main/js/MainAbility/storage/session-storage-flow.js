@@ -8,7 +8,7 @@ import {
 import { WORKOUT_STATES } from '../../../../../../../../watch/AceTennisWatch/entry/src/main/js/MainAbility/state/workout-state.js';
 import { createPointScore } from '../../../../../../../../watch/AceTennisWatch/entry/src/main/js/MainAbility/state/tennis-score.js';
 
-export const COMPLETED_SESSION_STORAGE_KEY = 'acetennis:p4:session:test:001';
+export const COMPLETED_SESSION_STORAGE_KEY = 'at_p4_session_001';
 export const MISSING_SESSION_VALUE = '__P4_003_MISSING__';
 
 const TEST_RECORD_STARTED_AT = 1735689600000;
