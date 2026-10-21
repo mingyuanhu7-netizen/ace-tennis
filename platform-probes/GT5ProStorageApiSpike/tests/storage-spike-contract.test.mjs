@@ -50,4 +50,5 @@ for (const action of ['READ', 'WRITE', 'OVERWRITE', 'DELETE', 'BAD KEY']) {
 }
 assert.match(page, /onShowOperations\(\)/);
 assert.match(page, /onShowStatus\(\)/);
+assert.match(css, /\.screen\s*\{[^}]*flex-direction:\s*column;/s);
 assert.doesNotMatch(css, /flex-wrap|overflow|font-weight|lines|line-height/);
