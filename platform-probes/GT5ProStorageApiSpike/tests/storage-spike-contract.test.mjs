@@ -34,7 +34,7 @@ assert.equal(state.lastResult, 'FAIL');
 assert.equal(state.lastError, '401: bad key');
 assert.equal(formatFailure(undefined, undefined), 'UNKNOWN');
 
-console.log('P4-001 storage probe contract: PASS');
+console.log('P4-001 storage utility contract: PASS');
 
 const hmlPath = new URL('../entry/src/main/js/MainAbility/pages/index/index.hml', import.meta.url);
 const cssPath = new URL('../entry/src/main/js/MainAbility/pages/index/index.css', import.meta.url);
@@ -45,11 +45,15 @@ const page = readFileSync(pagePath, 'utf8');
 
 assert.match(hml, /pageMode === 'STATUS'/);
 assert.match(hml, /pageMode === 'OPERATIONS'/);
-for (const action of ['READ', 'WRITE', 'OVERWRITE', 'DELETE', 'BAD KEY']) {
+assert.match(hml, /pageMode === 'RESULT'/);
+for (const action of ['SAVE', 'READ', 'VERIFY']) {
     assert.match(hml, new RegExp('>' + action + '<'));
 }
 assert.match(page, /onShowOperations\(\)/);
 assert.match(page, /onShowStatus\(\)/);
+assert.match(page, /onSave\(\)/);
+assert.match(page, /onRead\(\)/);
+assert.match(page, /onVerify\(\)/);
 assert.match(css, /\.container\s*\{[^}]*flex-direction:\s*column;/s);
 assert.doesNotMatch(hml, /class="screen"/);
 assert.doesNotMatch(css, /flex-wrap|overflow|font-weight|lines|line-height/);

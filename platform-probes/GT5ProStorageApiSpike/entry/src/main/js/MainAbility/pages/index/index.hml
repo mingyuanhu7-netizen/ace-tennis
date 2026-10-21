@@ -1,6 +1,6 @@
 <div class="container">
     <text class="title" if="{{ pageMode === 'STATUS' }}">{{ title }}</text>
-    <text class="key" if="{{ pageMode === 'STATUS' }}">KEY: {{ keyLabel }}</text>
+    <text class="key" if="{{ pageMode === 'STATUS' }}">ID: {{ keyLabel }}</text>
     <text class="status" if="{{ pageMode === 'STATUS' }}">STARTUP: {{ startupRead }}</text>
     <text class="status" if="{{ pageMode === 'STATUS' }}">OP: {{ lastOperation }}</text>
     <text class="status" if="{{ pageMode === 'STATUS' }}">RESULT: {{ lastResult }}</text>
@@ -8,36 +8,34 @@
     <div class="action" if="{{ pageMode === 'STATUS' }}" onclick="onShowOperations">
         <text class="action-label">OPERATIONS</text>
     </div>
-    <text class="title" if="{{ pageMode === 'OPERATIONS' }}">STORAGE TEST</text>
+
+    <text class="title" if="{{ pageMode === 'OPERATIONS' }}">SESSION TEST</text>
+    <text class="key" if="{{ pageMode === 'OPERATIONS' }}">ID: {{ keyLabel }}</text>
     <text class="status" if="{{ pageMode === 'OPERATIONS' }}">OP: {{ lastOperation }}</text>
     <text class="status" if="{{ pageMode === 'OPERATIONS' }}">RESULT: {{ lastResult }}</text>
     <text class="error" if="{{ pageMode === 'OPERATIONS' }}">ERROR: {{ lastError }}</text>
+    <div class="action" if="{{ pageMode === 'OPERATIONS' }}" onclick="onSave">
+        <text class="action-label">SAVE</text>
+    </div>
     <div class="action" if="{{ pageMode === 'OPERATIONS' }}" onclick="onRead">
         <text class="action-label">READ</text>
-    </div>
-    <div class="action" if="{{ pageMode === 'OPERATIONS' }}" onclick="onWrite">
-        <text class="action-label">WRITE</text>
-    </div>
-    <div class="action secondary" if="{{ pageMode === 'OPERATIONS' }}" onclick="onShowAdvanced">
-        <text class="action-label">MORE</text>
     </div>
     <div class="back" if="{{ pageMode === 'OPERATIONS' }}" onclick="onShowStatus">
         <text class="back-label">STATUS</text>
     </div>
-    <text class="title" if="{{ pageMode === 'ADVANCED' }}">STORAGE MORE</text>
-    <text class="status" if="{{ pageMode === 'ADVANCED' }}">OP: {{ lastOperation }}</text>
-    <text class="status" if="{{ pageMode === 'ADVANCED' }}">RESULT: {{ lastResult }}</text>
-    <text class="error" if="{{ pageMode === 'ADVANCED' }}">ERROR: {{ lastError }}</text>
-    <div class="action" if="{{ pageMode === 'ADVANCED' }}" onclick="onOverwrite">
-        <text class="action-label">OVERWRITE</text>
+
+    <text class="title" if="{{ pageMode === 'RESULT' }}">SESSION STORED</text>
+    <text class="status" if="{{ pageMode === 'RESULT' }}">OP: {{ lastOperation }}</text>
+    <text class="status" if="{{ pageMode === 'RESULT' }}">RESULT: {{ lastResult }}</text>
+    <text class="info" if="{{ pageMode === 'RESULT' }}">SCHEMA: {{ detailSchema }}</text>
+    <text class="info" if="{{ pageMode === 'RESULT' }}">DURATION: {{ detailDuration }}</text>
+    <text class="info" if="{{ pageMode === 'RESULT' }}">SETS: {{ detailSets }}</text>
+    <text class="info" if="{{ pageMode === 'RESULT' }}">GAMES: {{ detailGames }}</text>
+    <text class="error" if="{{ pageMode === 'RESULT' }}">ERROR: {{ lastError }}</text>
+    <div class="action" if="{{ pageMode === 'RESULT' }}" onclick="onVerify">
+        <text class="action-label">VERIFY</text>
     </div>
-    <div class="action" if="{{ pageMode === 'ADVANCED' }}" onclick="onDelete">
-        <text class="action-label">DELETE</text>
-    </div>
-    <div class="action secondary" if="{{ pageMode === 'ADVANCED' }}" onclick="onInvalidKey">
-        <text class="action-label">BAD KEY</text>
-    </div>
-    <div class="back" if="{{ pageMode === 'ADVANCED' }}" onclick="onShowOperations">
+    <div class="back" if="{{ pageMode === 'RESULT' }}" onclick="onShowOperations">
         <text class="back-label">BACK</text>
     </div>
 </div>

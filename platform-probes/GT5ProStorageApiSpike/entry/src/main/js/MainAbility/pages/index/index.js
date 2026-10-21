@@ -1,48 +1,52 @@
 import storage from '@system.storage';
 import {
-    MISSING_VALUE,
-    OVERWRITE_VALUE,
-    PROBE_KEY,
-    WRITE_VALUE,
-    createProbeViewState,
-    recordFailure,
-    recordSuccess
-} from '../../storage/storage-probe-state';
+    createCompletedSessionTestRecord,
+    readCompletedSession,
+    saveCompletedSession,
+    verifyCompletedSession
+} from '../../storage/session-storage-flow.js';
 
 export default {
     data: {
-        title: 'STORAGE SPIKE',
-        keyLabel: PROBE_KEY,
+        title: 'SESSION STORAGE',
+        keyLabel: 'TEST-001',
         lastOperation: 'NOT_RUN',
         lastResult: 'NOT_RUN',
         lastError: 'NONE',
         startupRead: 'PENDING',
+        detailSchema: '-',
+        detailDuration: '-',
+        detailSets: '-',
+        detailGames: '-',
         pageMode: 'STATUS'
     },
 
     onInit() {
-        this.applyViewState(createProbeViewState());
+        this.expectedRecord = createCompletedSessionTestRecord();
+        this.lastReadRecord = null;
         this.readOnStartup();
     },
 
-    applyViewState(state) {
-        this.lastOperation = state.lastOperation;
-        this.lastResult = state.lastResult;
-        this.lastError = state.lastError;
+    applyOperationResult(result) {
+        this.lastOperation = result.operation;
+        this.lastResult = result.result;
+        this.lastError = result.error;
     },
 
     readOnStartup() {
         const page = this;
-        storage.get({
-            key: PROBE_KEY,
-            default: MISSING_VALUE,
-            success: function(data) {
-                page.startupRead = data === MISSING_VALUE ? 'MISSING' : 'FOUND: ' + data;
-                page.applyViewState(recordSuccess(createProbeViewState(), 'STARTUP_READ', data));
-            },
-            fail: function(data, code) {
-                page.startupRead = 'FAIL';
-                page.applyViewState(recordFailure(createProbeViewState(), 'STARTUP_READ', data, code));
+        readCompletedSession(storage, this.expectedRecord, function(result) {
+            page.applyOperationResult({
+                operation: 'STARTUP_READ',
+                result: result.result,
+                error: result.error
+            });
+            page.startupRead = result.result === 'PASS'
+                ? 'FOUND'
+                : result.result === 'MISSING' ? 'MISSING' : 'FAIL';
+            if (result.result === 'PASS') {
+                page.lastReadRecord = result.record;
+                page.applyRecordDetails(result.record);
             }
         });
     },
@@ -51,74 +55,46 @@ export default {
         this.pageMode = 'OPERATIONS';
     },
 
-    onShowAdvanced() {
-        this.pageMode = 'ADVANCED';
-    },
-
     onShowStatus() {
         this.pageMode = 'STATUS';
     },
 
-    onWrite() {
-        this.writeValue('WRITE', WRITE_VALUE);
-    },
-
-    onOverwrite() {
-        this.writeValue('OVERWRITE', OVERWRITE_VALUE);
-    },
-
-    writeValue(operation, value) {
+    onSave() {
         const page = this;
-        storage.set({
-            key: PROBE_KEY,
-            value: value,
-            success: function() {
-                page.applyViewState(recordSuccess(createProbeViewState(), operation));
-            },
-            fail: function(data, code) {
-                page.applyViewState(recordFailure(createProbeViewState(), operation, data, code));
-            }
+        saveCompletedSession(storage, this.expectedRecord, function(result) {
+            page.applyOperationResult(result);
         });
     },
 
     onRead() {
         const page = this;
-        storage.get({
-            key: PROBE_KEY,
-            default: MISSING_VALUE,
-            success: function(data) {
-                page.applyViewState(recordSuccess(createProbeViewState(), 'READ', data));
-            },
-            fail: function(data, code) {
-                page.applyViewState(recordFailure(createProbeViewState(), 'READ', data, code));
+        readCompletedSession(storage, this.expectedRecord, function(result) {
+            page.applyOperationResult(result);
+            if (result.result === 'PASS') {
+                page.lastReadRecord = result.record;
+                page.applyRecordDetails(result.record);
+                page.pageMode = 'RESULT';
             }
         });
     },
 
-    onDelete() {
-        const page = this;
-        storage.delete({
-            key: PROBE_KEY,
-            success: function() {
-                page.applyViewState(recordSuccess(createProbeViewState(), 'DELETE'));
-            },
-            fail: function(data, code) {
-                page.applyViewState(recordFailure(createProbeViewState(), 'DELETE', data, code));
-            }
+    onVerify() {
+        if (this.lastReadRecord === null) {
+            this.applyOperationResult({ operation: 'VERIFY', result: 'FAIL', error: 'NO_READ' });
+            return;
+        }
+        const verification = verifyCompletedSession(this.expectedRecord, this.lastReadRecord);
+        this.applyOperationResult({
+            operation: 'VERIFY',
+            result: verification.result,
+            error: verification.mismatch || 'NONE'
         });
     },
 
-    onInvalidKey() {
-        const page = this;
-        storage.set({
-            key: 'at_p4_storage_invalid_key_over_32_chars',
-            value: 'X',
-            success: function() {
-                page.applyViewState(recordSuccess(createProbeViewState(), 'INVALID_KEY_UNEXPECTED'));
-            },
-            fail: function(data, code) {
-                page.applyViewState(recordFailure(createProbeViewState(), 'INVALID_KEY', data, code));
-            }
-        });
+    applyRecordDetails(record) {
+        this.detailSchema = record.schemaVersion;
+        this.detailDuration = String(Math.floor(record.activeDurationMs / 1000)) + 's';
+        this.detailSets = String(record.score.playerSets) + '-' + String(record.score.opponentSets);
+        this.detailGames = String(record.score.playerGames) + '-' + String(record.score.opponentGames);
     }
 };
