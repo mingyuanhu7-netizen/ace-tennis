@@ -18,6 +18,8 @@
 | DEC-XDEVICE-001 | Cross-device transport | CROSS-DEVICE | PROPOSED / VALIDATION REQUIRED |
 | DEC-PHONE-001 | Mate X7 adaptive layout baseline | PHONE | APPROVED / PASS |
 | DEC-PLATFORM-003 | GT 5 Pro Lite Wearable API10 physical baseline | WATCH | APPROVED / PASS |
+| DEC-SCORING-001 | 6–6 tiebreak boundary | WATCH | APPROVED BY USER DIRECTION |
+| DEC-SCORING-002 | Basic manual scoring and one-event Undo acceptance boundary | WATCH | APPROVED / PASS |
 
 ## DEC-001 — Device Responsibility Boundary
 
@@ -229,6 +231,53 @@ Queue, Retry, Deduplication, ACK, and Recovery must work independently from the 
 - Do not hardcode screen dimensions.
 
 **Result:** PASS
+
+## DEC-SCORING-001 — 6–6 Tiebreak Boundary
+
+**Date:** 2026-10-20
+
+**Status:** APPROVED BY USER DIRECTION
+
+**Scope:** WATCH manual scoring domain
+
+**Decision:**
+
+- At `6–6` games, the scoring domain enters `TIEBREAK_PENDING`.
+- A set is not awarded at `6–6`; no conventional game score may advance until a tiebreak rule is explicitly approved and implemented.
+- The point-award controls are visibly disabled while `TIEBREAK_PENDING` is active.
+- Workout lifecycle controls remain available, including pause, finish confirmation, Quick Result, and Done.
+
+**Reason:**
+
+The user directed a controlled Set-scoring increment without introducing a tiebreak algorithm.
+
+**Affected specifications:** `PRODUCT_SPEC.md`, `UI_SPEC_WATCH.md`, `ACCEPTANCE.md`
+
+## DEC-SCORING-002 — Basic Manual Scoring and One-Event Undo Acceptance Boundary
+
+**Date:** 2026-10-20
+
+**Status:** APPROVED / PASS
+
+**Scope:** WATCH manual scoring domain
+
+**Decision:**
+
+- The current manual scoring scope includes point, game, deuce, advantage, basic Set, `TIEBREAK_PENDING`, and one-event Undo correction.
+- Undo restores the complete prior scoring snapshot without altering the workout lifecycle or timer state.
+- This acceptance does not approve Redo, a tiebreak algorithm, persistent records, sensor integration, or phone synchronization.
+- The P3-006 artifact and its source/test records must be retained as a regression baseline. Its tested-device hash linkage and source commit linkage remain `UNKNOWN` rather than inferred.
+- The next implementation priority is Watch Session local persistence, after a separately validated Lite Wearable storage capability probe.
+
+**Evidence:**
+
+User-reported physical GT 5 Pro P3-006 acceptance: TB Pending, Game, and Set Undo; score-button recovery; Paused Undo timer continuity; and workout-state regression all PASS.
+
+**Artifact traceability:**
+
+Repository artifact: `AceTennis-P3-006-UNDO-API10-signed.hap`; current repository SHA-256 is recorded in `PLATFORM_VALIDATION.md`. Tested-device hash linkage and source commit linkage are `UNKNOWN`.
+
+**Affected specifications:** `PRODUCT_SPEC.md`, `UI_SPEC_WATCH.md`, `ACCEPTANCE.md`, `PLATFORM_VALIDATION.md`
 
 ## Decision Template
 

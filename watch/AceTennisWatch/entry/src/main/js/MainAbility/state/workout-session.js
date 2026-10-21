@@ -1,4 +1,5 @@
 import { WORKOUT_EVENTS, WORKOUT_STATES } from './workout-state.js';
+import { createScoreHistory } from './tennis-score.js';
 
 export { WORKOUT_EVENTS, WORKOUT_STATES };
 
@@ -15,9 +16,13 @@ export function createWorkoutSession() {
         activeSegmentStartedAt: null,
         playerPointIndex: 0,
         opponentPointIndex: 0,
+        playerSets: 0,
+        opponentSets: 0,
         playerGames: 0,
         opponentGames: 0,
         pointMode: 'NORMAL',
+        tiebreakPending: false,
+        scoreHistory: createScoreHistory(),
         mockHeartRate: MOCK_HEART_RATE,
         mockSwingCount: MOCK_SWING_COUNT,
         mockScoreDisplay: MOCK_SCORE_DISPLAY,

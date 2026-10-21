@@ -123,11 +123,74 @@ The physical target validated the Lite Wearable application model, installation,
 
 The Phase 2 result validates only the Mock Session lifecycle on the physical GT 5 Pro. It does not validate real sensors, persistence, phone sync, historical records, or tennis algorithms.
 
+### Phase 3 P3-004 Deuce / Advantage — Physical Validation
+
+| Validation | Result |
+| --- | --- |
+| Physical artifact | `AceTennis-P3-004-DEUCE-ADVANTAGE-API10-signed.hap` |
+| Install / launch | PASS |
+| Black screen, crash, or freeze | NO |
+| `DEUCE → ADV YOU → Game You` | PASS |
+| `DEUCE → ADV OPP → Game Opp` | PASS |
+| `ADV YOU → DEUCE` | PASS |
+| `ADV OPP → DEUCE` | PASS |
+| Game increment and point reset | PASS |
+
+`P3-004 = PASS`
+
+This evidence validates manual point, game, deuce, and advantage behavior only. Set scoring and tiebreak behavior remain untested at this point.
+
+### Phase 3 P3-005 Basic Set Scoring — Physical Validation
+
+| Validation | Result |
+| --- | --- |
+| Physical device | HUAWEI WATCH GT 5 Pro |
+| Physical artifact | `AceTennis-P3-005-BASIC-SET-API10-signed.hap` |
+| Install / launch | PASS |
+| Black screen | NO |
+| `5–3 → 6–3 → Set +1` / two-game lead | PASS |
+| `5–5 → 6–5` has no set; `6–5 → 7–5 → Set +1` | PASS |
+| Set increment and game reset after set | PASS |
+| `6–6 → TIEBREAK_PENDING` | PASS |
+| `TIEBREAK_PENDING` blocks Player/Opponent score input without score change | PASS |
+| Quick Result displays actual Set and Game scores | PASS |
+| Done returns to Ready; new-session scoring reset | PASS |
+
+`P3-005 = PASS`
+
+This validates the basic Set-scoring boundary and `TIEBREAK_PENDING` behavior. A tiebreak algorithm is not implemented or validated.
+
+### Phase 3 P3-006 Score Undo / Correction — Physical Validation
+
+| Validation | Result |
+| --- | --- |
+| Physical device | HUAWEI WATCH GT 5 Pro |
+| Physical acceptance | PASS — user-reported |
+| Physical launch | PASS — user-reported |
+| `TB_PENDING → Undo` | PASS |
+| Game +1 undo | PASS |
+| Set +1 undo | PASS |
+| Score-button recovery after Undo | PASS |
+| Paused Undo keeps timer paused | PASS |
+| Workout state-machine regression | PASS |
+| Repository artifact | `AceTennis-P3-006-UNDO-API10-signed.hap` |
+| Current repository artifact SHA-256 | `3cf443ee684a1c007bf254173e853c54d4e258fdc929f1baaf0fddada898e25c` |
+| Tested-device artifact hash linkage | UNKNOWN — no device-side hash was supplied |
+| Source commit linkage | UNKNOWN — P3-005/P3-006 source changes are uncommitted at inspection |
+
+`P3-006_PHYSICAL_ACCEPTANCE = PASS`
+
+This is physical GT 5 Pro evidence, not simulator or static-only evidence. It validates the current manual-scoring correction scope only; Redo, tiebreak, persistence, sensors, and phone synchronization remain outside the result.
+
 ### Current Engineering Phase
 
-`CURRENT_PHASE = PHASE_3_BASIC_TENNIS_SCORING`
+`COMPLETED = P3-006`
 
-Phase 3 begins with a controlled point-score engine only. Game, deuce, advantage, set, real sensors, persistence, and phone synchronization remain outside the current phase step until separately verified.
+`CURRENT_PHASE = WATCH_SESSION_PERSISTENCE_PLANNING`
+
+`NEXT_IMPLEMENTATION_PHASE = WATCH_SESSION_PERSISTENCE`
+
+Phase 3 manual point, game, deuce, advantage, basic Set scoring, and single-event score correction are physically validated through P3-006. Real sensors, phone synchronization, and tiebreak implementation remain unverified.
 
 ## 4. Historical Validation Path — Superseded
 

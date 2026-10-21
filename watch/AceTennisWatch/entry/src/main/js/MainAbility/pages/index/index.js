@@ -8,9 +8,12 @@ import {
 } from '../../state/workout-session.js';
 import {
     SCORE_EVENTS,
-    dispatchScoreEvent,
+    applyScoreEventWithHistory,
     getGameDisplay,
-    getScoreDisplay
+    getScoreDisplay,
+    getSetDisplay,
+    isScoreAwardBlocked,
+    undoLastScoreEvent
 } from '../../state/tennis-score.js';
 
 export default {
@@ -19,10 +22,15 @@ export default {
         lastEvent: null,
         sessionStatus: '',
         elapsedTime: '',
+        setDisplay: '',
         gameDisplay: '',
         scoreDisplay: '',
+        scoreAwardBlocked: false,
+        correctionOpen: false,
+        undoAvailable: false,
         quickHeartRate: '',
         quickSwingCount: '',
+        quickSetScore: '',
         quickGameScore: '',
         quickScore: ''
     },
@@ -32,12 +40,14 @@ export default {
             ? 'SESSION OK'
             : 'SESSION ERROR';
         this.elapsedTime = formatElapsedTime(0);
-        this.gameDisplay = getGameDisplay(this.runtimeSession);
-        this.scoreDisplay = getScoreDisplay(this.runtimeSession);
+        this.refreshScoreDisplays();
         this.quickHeartRate = '';
         this.quickSwingCount = '';
+        this.quickSetScore = '';
         this.quickGameScore = '';
         this.quickScore = '';
+        this.correctionOpen = false;
+        this.undoAvailable = false;
         this.timerHandle = null;
     },
     onDestroy() {
@@ -64,6 +74,7 @@ export default {
         this.currentScreen = this.runtimeSession.state;
         this.refreshElapsedTime();
         this.stopTimer();
+        this.correctionOpen = false;
     },
     onPlayerPoint() {
         this.applyScoreEvent(SCORE_EVENTS.PLAYER_POINT);
@@ -81,6 +92,7 @@ export default {
         this.currentScreen = this.runtimeSession.state;
         this.refreshElapsedTime();
         this.startTimer();
+        this.correctionOpen = false;
     },
     onRequestFinish() {
         this.lastEvent = WORKOUT_EVENTS.REQUEST_FINISH;
@@ -92,6 +104,7 @@ export default {
         this.currentScreen = this.runtimeSession.state;
         this.refreshElapsedTime();
         this.stopTimer();
+        this.correctionOpen = false;
     },
     onCancelFinish() {
         this.lastEvent = WORKOUT_EVENTS.CANCEL_FINISH;
@@ -121,6 +134,7 @@ export default {
         if (this.currentScreen === WORKOUT_STATES.QUICK_RESULT) {
             this.quickHeartRate = `${this.runtimeSession.mockHeartRate} BPM`;
             this.quickSwingCount = `${this.runtimeSession.mockSwingCount} SWINGS`;
+            this.quickSetScore = this.setDisplay;
             this.quickGameScore = this.gameDisplay;
             this.quickScore = this.scoreDisplay;
         }
@@ -140,12 +154,14 @@ export default {
         this.currentScreen = this.runtimeSession.state;
         this.sessionStatus = 'SESSION OK';
         this.elapsedTime = formatElapsedTime(0);
-        this.gameDisplay = getGameDisplay(this.runtimeSession);
-        this.scoreDisplay = getScoreDisplay(this.runtimeSession);
+        this.refreshScoreDisplays();
         this.quickHeartRate = '';
         this.quickSwingCount = '';
+        this.quickSetScore = '';
         this.quickGameScore = '';
         this.quickScore = '';
+        this.correctionOpen = false;
+        this.undoAvailable = false;
     },
     refreshElapsedTime() {
         this.elapsedTime = formatElapsedTime(
@@ -156,9 +172,47 @@ export default {
         if (this.runtimeSession.state !== WORKOUT_STATES.ACTIVE_WORKOUT) {
             return;
         }
-        this.runtimeSession = dispatchScoreEvent(this.runtimeSession, event);
+        const result = applyScoreEventWithHistory(
+            this.runtimeSession,
+            this.runtimeSession.scoreHistory,
+            event
+        );
+        this.runtimeSession = {
+            ...result.score,
+            scoreHistory: result.scoreHistory
+        };
+        this.refreshScoreDisplays();
+    },
+    onOpenCorrection() {
+        if (this.runtimeSession.state !== WORKOUT_STATES.ACTIVE_WORKOUT && this.runtimeSession.state !== WORKOUT_STATES.PAUSED) {
+            return;
+        }
+        this.correctionOpen = true;
+        this.refreshScoreDisplays();
+    },
+    onCloseCorrection() {
+        this.correctionOpen = false;
+    },
+    onUndoScore() {
+        if (this.runtimeSession.state !== WORKOUT_STATES.ACTIVE_WORKOUT && this.runtimeSession.state !== WORKOUT_STATES.PAUSED) {
+            return;
+        }
+        const result = undoLastScoreEvent(
+            this.runtimeSession,
+            this.runtimeSession.scoreHistory
+        );
+        this.runtimeSession = {
+            ...result.score,
+            scoreHistory: result.scoreHistory
+        };
+        this.refreshScoreDisplays();
+    },
+    refreshScoreDisplays() {
+        this.setDisplay = getSetDisplay(this.runtimeSession);
         this.gameDisplay = getGameDisplay(this.runtimeSession);
         this.scoreDisplay = getScoreDisplay(this.runtimeSession);
+        this.scoreAwardBlocked = isScoreAwardBlocked(this.runtimeSession);
+        this.undoAvailable = this.runtimeSession.scoreHistory.length > 0;
     },
     startTimer() {
         if (this.timerHandle !== null) {

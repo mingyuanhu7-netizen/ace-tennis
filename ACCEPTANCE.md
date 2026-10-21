@@ -60,8 +60,21 @@
 | Scope | Result | Evidence |
 | --- | --- | --- |
 | GT 5 Pro Phase 2 Mock Session lifecycle | PASS | `AceTennis-P2-010-COMPLETE-RESET-API10-signed.hap`: full state lifecycle, timer pause/resume, finish confirmation, Quick Result, reset, and a second session starting at `00:00` physically validated |
+| GT 5 Pro Phase 3 P3-004 manual scoring | PASS | `AceTennis-P3-004-DEUCE-ADVANTAGE-API10-signed.hap`: manual point/game scoring, Deuce/Advantage transitions, game increment, and point reset physically validated |
+| GT 5 Pro Phase 3 P3-005 basic Set scoring | PASS | `AceTennis-P3-005-BASIC-SET-API10-signed.hap`: `5–3 → 6–3` and `6–5 → 7–5` Set awards, `5–5 → 6–5` no-set boundary, `6–6 → TIEBREAK_PENDING` input blocking, Quick Result Set/Game display, and new-session scoring reset physically validated |
+| GT 5 Pro Phase 3 P3-006 score Undo / correction | PASS | User-reported physical GT 5 Pro acceptance: TB Pending, Game, and Set Undo; score-button recovery; Paused Undo timer continuity; and Workout lifecycle regression all PASS. Repository artifact: `AceTennis-P3-006-UNDO-API10-signed.hap`; tested-device hash linkage and source commit linkage are UNKNOWN. |
 
-Platform feasibility and the Phase 2 workout state machine are complete. `CURRENT_PHASE = PHASE_3_BASIC_TENNIS_SCORING`. Real sensors, persistence, phone sync, history, and tennis algorithms remain unverified and out of this result's scope; Phase 3 begins with controlled basic point scoring only.
+### P3-006 Detailed Physical Acceptance
+
+| Function | Expected behavior | Physical result | Evidence type | Acceptance |
+| --- | --- | --- | --- | --- |
+| TB Pending Undo | Restores the preceding Games/Points state and re-enables score controls | PASS | USER_CONFIRMED_PHYSICAL_PASS | PASS |
+| Game Undo | Restores the complete pre-game scoring snapshot | PASS | USER_CONFIRMED_PHYSICAL_PASS | PASS |
+| Set Undo | Restores Sets, Games, and Points before the Set award | PASS | USER_CONFIRMED_PHYSICAL_PASS | PASS |
+| Paused Undo | Corrects score while preserving `PAUSED` and stopped timing | PASS | USER_CONFIRMED_PHYSICAL_PASS | PASS |
+| Workout lifecycle regression | Ready → Active → Paused → Active → Finish Confirmation → Quick Result → Ready remains valid | PASS | USER_CONFIRMED_PHYSICAL_PASS | PASS |
+
+Platform feasibility and the Phase 2 workout state machine are complete. `COMPLETED = P3-006`; `CURRENT_PHASE = WATCH_SESSION_PERSISTENCE_PLANNING`; `NEXT_IMPLEMENTATION_PHASE = WATCH_SESSION_PERSISTENCE`. Tiebreak implementation, real sensors, phone sync, history, and tennis algorithms remain out of this result's scope.
 
 ## 6. Product Approval Checklist
 

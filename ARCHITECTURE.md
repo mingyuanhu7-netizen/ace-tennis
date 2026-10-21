@@ -106,7 +106,59 @@ NEEDS CONFIRMATION
 
 ## 9. Persistence
 
-NEEDS CONFIRMATION
+Status: `NOT IMPLEMENTED — WATCH_SESSION_PERSISTENCE PLANNING`.
+
+`COMPLETED = P3-006`
+
+`CURRENT_PHASE = WATCH_SESSION_PERSISTENCE_PLANNING`
+
+`NEXT_IMPLEMENTATION_PHASE = WATCH_SESSION_PERSISTENCE`
+
+The next phase is limited to a local Watch session record and recovery design. It must preserve the Watch-owned session boundary and keep future synchronization transport-independent.
+
+Local SDK evidence: the installed Lite Wearable JS SDK declares the FA-model `@system.storage` API with `SystemCapability.DistributedDataManager.Preferences.Core.Lite`; the Lite Wearable device capability definition includes that capability. This is an SDK-declared candidate only. Its availability, lifecycle behavior, capacity, durability, and recovery behavior on the physical GT 5 Pro remain `NOT VERIFIED` and require a focused physical capability probe before production persistence is implemented.
+
+The ArkTS `@ohos.data.preferences` and Android persistence APIs are not approved substitutes for this legacy Lite Wearable JS/HML/CSS project.
+
+### Watch Session Persistence Proposal — Not Implemented
+
+**Record boundary.** One in-progress record (`ace_tennis_session_v1`) and, after a confirmed finish, one completed local record are proposed. They remain local Watch records; no phone transfer, queue, retry, ACK, or cloud behavior is part of this phase.
+
+**Proposed in-progress payload.**
+
+- `schemaVersion` — proposed, for forward-compatible parsing and Mate X7 transport payloads.
+- `sessionId` — proposed unique identifier; the Lite-compatible generation strategy is `NEEDS CONFIRMATION` until P4-001.
+- `sessionStatus` / `recordStatus` — proposed `IN_PROGRESS` or `COMPLETED` local-record state.
+- `startedAt`, `endedAt`, `elapsedActiveMs`, `pausedDurationMs`, `activeSegmentStartedAt`, and `finishReturnState` — `elapsedActiveMs` exists in current runtime; the other persistence representation is proposed.
+- `playerSets`, `opponentSets`, `playerGames`, `opponentGames`, point indices, `pointMode`, and `tiebreakPending` — implemented in runtime scoring; persistence is proposed.
+- bounded `scoreHistory` only while the session is in progress, preserving the current Undo scope across recovery — proposed.
+- `heartRateValue`, `heartRateSource`, `swingCount`, and `swingSource` — runtime mock values exist; their persisted source markers are proposed and must remain `MOCK` until a real sensor phase is approved.
+- `createdAt`, `updatedAt`, `writeVersion`, and `syncStatus` — proposed. `syncStatus` is a local placeholder only; it must not initiate communication.
+
+**Lifecycle proposal.** Write an in-progress checkpoint after successful Start, score correction, Pause, Resume, and Finish-request transitions. Before a deliberate Pause or Finish, settle the active duration and persist that settled value. Preserve very short sessions; they are never discarded solely because elapsed duration is small. On Done, clear the in-progress checkpoint only after a completed record has been written and read back successfully.
+
+**Unexpected termination proposal.** A restored incomplete record must never revive a timer handle. The first physical recovery probe must decide, with explicit product approval, whether a previously active record resumes wall-clock accumulation or is restored as a recoverable paused session. Until that probe passes, this behavior remains `NEEDS CONFIRMATION`.
+
+**Validation ladder before implementation.**
+
+1. Build an isolated Lite Wearable `@system.storage` capability probe using a short key and JSON string payload.
+2. Physically verify write, read-back, process/app restart, malformed-value handling, and clear/delete on the GT 5 Pro.
+3. Record actual capacity/error behavior; do not assume atomic transactions or Android-style storage semantics.
+4. Only then implement the session repository and run lifecycle/recovery regression tests.
+
+### P4 Implementation Plan — Low to High Risk
+
+| Phase | Modification scope and key implementation | Automated test | Physical test and acceptance | Rollback and principal risk |
+| --- | --- | --- | --- | --- |
+| P4-001 | Isolated Lite Wearable `@system.storage` capability probe only; no AceTennis session code. | API-shape and JSON round-trip contract. | GT5 Pro write/read/delete after restart; artifact `AceTennis-P4-001-STORAGE-PROBE-API10-signed.hap`. | Remove the isolated probe; risk: SDK declaration differs from physical availability. |
+| P4-002 | Pure Session record model, serializer, parser, schema validation; no device writes. | Round-trip, malformed payload, schema-version, and score/Undo snapshot tests. | No physical feature claim required. | Revert model-only files; risk: model exceeds Lite storage limits. |
+| P4-003 | One completed Session save/read using only the P4-001-verified API. | Write-success, read-back, parse-failure, and short-session retention tests. | Save, close/reopen, and read one completed session on GT5 Pro. | Disable repository call behind one adapter; risk: write failure or partial data. |
+| P4-004 | Bounded multi-session completed-record index and list read. | Ordering, deduplication by `sessionId`, capacity boundary, and corrupt-entry isolation tests. | Create/read several local records on GT5 Pro. | Keep the single-record path; risk: capacity and read latency. |
+| P4-005 | Active Session checkpoint adapter at Start, score correction, Pause, Resume, Finish request, and confirm. | Trigger cadence, no timer-handle serialization, paused-duration, and no duplicate Session tests. | Start/pause/exit/reopen with one in-progress session. | Disable active checkpoints while retaining completed records; risk: battery impact and write cadence. |
+| P4-006 | Recovery policy and time consistency, gated by an approved P4-001 result. | Restore state, malformed checkpoint, duplicate launch, and no double-counting tests. | App termination/restart and watch reboot scenarios; physical timing evidence required. | Restore conservatively as recoverable paused state; risk: unverified background duration semantics. |
+| P4-007 | Persistence regression matrix and baseline archive; no new product capability. | Full P2/P3/P4 suite and migration compatibility tests. | Physical lifecycle, recovery, short-session, and retained-record regression. | Preserve P3-006 baseline artifact and revert persistence adapter; risk: incomplete evidence mapping. |
+
+Every P4 step changes one primary risk variable, produces a sequential `AceTennis-P4-00X-<DESCRIPTION>-API10-signed.hap` artifact, and remains `PHYSICAL_NOT_TESTED` until the user confirms GT 5 Pro results.
 
 ## 10. Cross-Device Transport
 

@@ -1,19 +1,28 @@
 <div class="container">
     <text class="brand">AceTennis</text>
-    <text class="state" if="{{ currentScreen !== 'QUICK_RESULT' }}">{{ currentScreen }}</text>
+    <text class="state" if="{{ currentScreen !== 'QUICK_RESULT' && correctionOpen === false }}">{{ currentScreen }}</text>
+    <text class="state" if="{{ correctionOpen === true }}">CORRECTION</text>
     <text class="quick-title" if="{{ currentScreen === 'QUICK_RESULT' }}">SESSION COMPLETE</text>
-    <text class="session-status">{{ sessionStatus }}</text>
+    <text class="session-status" if="{{ correctionOpen === false }}">{{ sessionStatus }}</text>
     <text class="quick-label" if="{{ currentScreen === 'QUICK_RESULT' }}">Duration</text>
     <text class="elapsed-status">{{ elapsedTime }}</text>
-    <text class="game-label" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">Games</text>
-    <text class="game-display" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">{{ gameDisplay }}</text>
-    <text class="score-label" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">Points</text>
-    <text class="score-display" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">{{ scoreDisplay }}</text>
-    <div class="control-row" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">
-        <div class="score-control" onclick="onPlayerPoint">
+    <text class="set-label" if="{{ currentScreen === 'ACTIVE_WORKOUT' && correctionOpen === false }}">Sets</text>
+    <text class="set-display" if="{{ currentScreen === 'ACTIVE_WORKOUT' && correctionOpen === false }}">{{ setDisplay }}</text>
+    <text class="game-label" if="{{ currentScreen === 'ACTIVE_WORKOUT' && correctionOpen === false }}">Games</text>
+    <text class="game-display" if="{{ currentScreen === 'ACTIVE_WORKOUT' && correctionOpen === false }}">{{ gameDisplay }}</text>
+    <text class="score-label" if="{{ currentScreen === 'ACTIVE_WORKOUT' && correctionOpen === false }}">Points</text>
+    <text class="score-display" if="{{ currentScreen === 'ACTIVE_WORKOUT' && correctionOpen === false }}">{{ scoreDisplay }}</text>
+    <div class="control-row" if="{{ currentScreen === 'ACTIVE_WORKOUT' && correctionOpen === false }}">
+        <div class="score-control" if="{{ scoreAwardBlocked === false }}" onclick="onPlayerPoint">
             <text class="control-label">You +</text>
         </div>
-        <div class="score-control" onclick="onOpponentPoint">
+        <div class="score-control" if="{{ scoreAwardBlocked === false }}" onclick="onOpponentPoint">
+            <text class="control-label">Opp +</text>
+        </div>
+        <div class="score-control score-control-disabled" if="{{ scoreAwardBlocked === true }}">
+            <text class="control-label">You +</text>
+        </div>
+        <div class="score-control score-control-disabled" if="{{ scoreAwardBlocked === true }}">
             <text class="control-label">Opp +</text>
         </div>
     </div>
@@ -21,7 +30,7 @@
     <div class="start" if="{{ currentScreen === 'READY' }}" onclick="onStart">
         <text class="start-label">Start</text>
     </div>
-    <div class="control-row" if="{{ currentScreen === 'ACTIVE_WORKOUT' }}">
+    <div class="control-row" if="{{ currentScreen === 'ACTIVE_WORKOUT' && correctionOpen === false }}">
         <div class="score-control" onclick="onPause">
             <text class="control-label">Pause</text>
         </div>
@@ -29,10 +38,31 @@
             <text class="control-label">Finish</text>
         </div>
     </div>
-    <div class="start" if="{{ currentScreen === 'PAUSED' }}" onclick="onResume">
+    <div class="correction-entry" if="{{ currentScreen === 'ACTIVE_WORKOUT' && correctionOpen === false }}" onclick="onOpenCorrection">
+        <text class="correction-label">Correct score</text>
+    </div>
+    <div class="correction-entry" if="{{ currentScreen === 'PAUSED' && correctionOpen === false }}" onclick="onOpenCorrection">
+        <text class="correction-label">Correct score</text>
+    </div>
+    <text class="set-label" if="{{ correctionOpen === true }}">Sets</text>
+    <text class="set-display" if="{{ correctionOpen === true }}">{{ setDisplay }}</text>
+    <text class="game-label" if="{{ correctionOpen === true }}">Games</text>
+    <text class="game-display" if="{{ correctionOpen === true }}">{{ gameDisplay }}</text>
+    <text class="score-label" if="{{ correctionOpen === true }}">Points</text>
+    <text class="score-display" if="{{ correctionOpen === true }}">{{ scoreDisplay }}</text>
+    <div class="start" if="{{ correctionOpen === true && undoAvailable === true }}" onclick="onUndoScore">
+        <text class="start-label">Undo</text>
+    </div>
+    <div class="start start-disabled" if="{{ correctionOpen === true && undoAvailable === false }}">
+        <text class="start-label">Undo</text>
+    </div>
+    <div class="correction-entry" if="{{ correctionOpen === true }}" onclick="onCloseCorrection">
+        <text class="correction-label">Back</text>
+    </div>
+    <div class="start" if="{{ currentScreen === 'PAUSED' && correctionOpen === false }}" onclick="onResume">
         <text class="start-label">Resume</text>
     </div>
-    <div class="start" if="{{ currentScreen === 'PAUSED' }}" onclick="onRequestFinish">
+    <div class="start" if="{{ currentScreen === 'PAUSED' && correctionOpen === false }}" onclick="onRequestFinish">
         <text class="start-label">Finish</text>
     </div>
     <div class="start" if="{{ currentScreen === 'FINISH_CONFIRMATION' }}" onclick="onCancelFinish">
@@ -43,6 +73,8 @@
     </div>
     <text class="quick-metric" if="{{ currentScreen === 'QUICK_RESULT' }}">{{ quickHeartRate }}</text>
     <text class="quick-metric" if="{{ currentScreen === 'QUICK_RESULT' }}">{{ quickSwingCount }}</text>
+    <text class="quick-label" if="{{ currentScreen === 'QUICK_RESULT' }}">Sets</text>
+    <text class="quick-metric" if="{{ currentScreen === 'QUICK_RESULT' }}">{{ quickSetScore }}</text>
     <text class="quick-label" if="{{ currentScreen === 'QUICK_RESULT' }}">Games</text>
     <text class="quick-metric" if="{{ currentScreen === 'QUICK_RESULT' }}">{{ quickGameScore }}</text>
     <text class="quick-label" if="{{ currentScreen === 'QUICK_RESULT' }}">Points</text>

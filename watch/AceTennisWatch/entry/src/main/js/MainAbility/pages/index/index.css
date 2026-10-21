@@ -40,6 +40,18 @@
   font-size: 14px;
   text-align: center;
 }
+.set-label {
+  width: 220px;
+  margin-top: 4px;
+  font-size: 14px;
+  text-align: center;
+}
+.set-display {
+  width: 220px;
+  margin-top: 2px;
+  font-size: 18px;
+  text-align: center;
+}
 .game-label {
   width: 220px;
   margin-top: 4px;
@@ -73,6 +85,22 @@
   align-items: center;
   background-color: #1464f4;
   border-radius: 26px;
+}
+.score-control-disabled {
+  background-color: #6b7280;
+}
+.correction-entry {
+  width: 140px;
+  height: 28px;
+  margin-top: 6px;
+  justify-content: center;
+  align-items: center;
+}
+.correction-label {
+  width: 140px;
+  font-size: 14px;
+  color: #1464f4;
+  text-align: center;
 }
 .control-label {
   width: 104px;
@@ -113,4 +141,7 @@
   color: #ffffff;
   font-size: 24px;
   text-align: center;
+}
+.start-disabled {
+  background-color: #6b7280;
 }
