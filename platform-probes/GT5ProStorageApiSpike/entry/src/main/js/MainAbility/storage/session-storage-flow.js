@@ -247,6 +247,60 @@ export function runBoundaryDiagnostic(storage, onComplete) {
     runAt(0);
 }
 
+export function createTouchBoundaryCases() {
+    return [
+        sizeCase('J_136B', 'at_p4_touch_j', createPaddedJson(136), null),
+        sizeCase('K_144B', 'at_p4_touch_k', createPaddedJson(144), null),
+        sizeCase('L_152B', 'at_p4_touch_l', createPaddedJson(152), null)
+    ];
+}
+
+export function runTouchBoundaryDiagnostic(storage, onComplete) {
+    const cases = createTouchBoundaryCases();
+    const steps = [];
+
+    function runAt(index) {
+        if (index >= cases.length) {
+            onComplete({ result: steps.every((step) => step.result === 'PASS') ? 'PASS' : 'FAIL', steps: steps });
+            return;
+        }
+        const item = cases[index];
+        storage.set({
+            key: item.key,
+            value: item.value,
+            success: function() {
+                storage.get({
+                    key: item.key,
+                    default: MISSING_SESSION_VALUE,
+                    success: function(value) {
+                        const matched = value === item.value;
+                        steps.push({
+                            label: item.label,
+                            byteLength: item.byteLength,
+                            setStatus: 'PASS',
+                            getStatus: 'PASS',
+                            match: matched ? 'PASS' : 'FAIL',
+                            result: matched ? 'PASS' : 'FAIL',
+                            error: matched ? 'NONE' : 'READBACK_MISMATCH'
+                        });
+                        runAt(index + 1);
+                    },
+                    fail: function(data, code) {
+                        steps.push(boundaryFailure(item, 'PASS', 'FAIL', 'NOT_TESTED', formatStorageError(data, code)));
+                        runAt(index + 1);
+                    }
+                });
+            },
+            fail: function(data, code) {
+                steps.push(boundaryFailure(item, 'FAIL', 'NOT_TESTED', 'NOT_TESTED', formatStorageError(data, code)));
+                runAt(index + 1);
+            }
+        });
+    }
+
+    runAt(0);
+}
+
 export function readCompletedSession(storage, expectedRecord, onResult) {
     storage.get({
         key: COMPLETED_SESSION_STORAGE_KEY,

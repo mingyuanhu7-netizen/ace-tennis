@@ -3,11 +3,13 @@ import {
     COMPLETED_SESSION_STORAGE_KEY,
     createCompletedSessionTestRecord,
     createBoundaryDiagnosticCases,
+    createTouchBoundaryCases,
     createSizeDiagnosticCases,
     readCompletedSession,
     runWriteDiagnostic,
     runSizeDiagnostic,
     runBoundaryDiagnostic,
+    runTouchBoundaryDiagnostic,
     saveCompletedSession,
     verifyCompletedSession
 } from '../entry/src/main/js/MainAbility/storage/session-storage-flow.js';
@@ -176,3 +178,18 @@ assert.equal(boundaryResult.steps.every((step) => step.getStatus === 'PASS'), tr
 assert.equal(boundaryResult.steps.every((step) => step.match === 'PASS'), true);
 assert.equal(boundaryResult.steps.every((step) => step.error === 'NONE'), true);
 console.log('P4-003 boundary G-I diagnostic: PASS');
+
+const touchCases = createTouchBoundaryCases();
+assert.deepEqual(touchCases.map((item) => item.label), ['J_136B', 'K_144B', 'L_152B']);
+assert.deepEqual(touchCases.map((item) => item.byteLength), [136, 144, 152]);
+assert.equal(touchCases.every((item) => item.valueType === 'string' && item.jsonValid === true), true);
+
+let touchBoundaryResult;
+runTouchBoundaryDiagnostic(new FakeStorage(), (value) => {
+    touchBoundaryResult = value;
+});
+assert.equal(touchBoundaryResult.steps.length, 3);
+assert.equal(touchBoundaryResult.steps.every((step) => step.setStatus === 'PASS'), true);
+assert.equal(touchBoundaryResult.steps.every((step) => step.getStatus === 'PASS'), true);
+assert.equal(touchBoundaryResult.steps.every((step) => step.match === 'PASS'), true);
+console.log('P4-003 touch boundary J-L diagnostic: PASS');

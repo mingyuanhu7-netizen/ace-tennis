@@ -3,6 +3,7 @@ import {
     createCompletedSessionTestRecord,
     runSizeDiagnostic,
     runBoundaryDiagnostic,
+    runTouchBoundaryDiagnostic,
     readCompletedSession,
     runWriteDiagnostic,
     saveCompletedSession,
@@ -32,6 +33,9 @@ export default {
         boundaryG: 'NOT_RUN',
         boundaryH: 'NOT_RUN',
         boundaryI: 'NOT_RUN',
+        touchJ: 'NOT_RUN',
+        touchK: 'NOT_RUN',
+        touchL: 'NOT_RUN',
         pageMode: 'STATUS'
     },
 
@@ -120,6 +124,23 @@ export default {
             page.boundaryH = formatBoundaryStep(steps[1]);
             page.boundaryI = formatBoundaryStep(steps[2]);
             page.lastOperation = 'BOUNDARY_G_TO_I';
+            page.lastResult = result.result;
+            page.lastError = result.result === 'PASS' ? 'NONE' : 'SEE_CASES';
+        });
+    },
+
+    onShowTouchBoundary() {
+        this.pageMode = 'TOUCH';
+    },
+
+    onRunTouchBoundary() {
+        const page = this;
+        runTouchBoundaryDiagnostic(storage, function(result) {
+            const steps = result.steps;
+            page.touchJ = formatBoundaryStep(steps[0]);
+            page.touchK = formatBoundaryStep(steps[1]);
+            page.touchL = formatBoundaryStep(steps[2]);
+            page.lastOperation = 'TOUCH_J_TO_L';
             page.lastResult = result.result;
             page.lastError = result.result === 'PASS' ? 'NONE' : 'SEE_CASES';
         });

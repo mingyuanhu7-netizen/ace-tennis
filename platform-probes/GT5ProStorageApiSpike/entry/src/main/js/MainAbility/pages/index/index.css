@@ -22,7 +22,7 @@
 }
 .action {
   width: 180px;
-  height: 36px;
+  height: 40px;
   margin-top: 5px;
   border-radius: 18px;
   justify-content: center;
@@ -34,16 +34,19 @@
 }
 .action-label, .back-label {
   width: 180px;
+  height: 40px;
   font-size: 15px;
   color: #ffffff;
   text-align: center;
 }
 .back {
   width: 180px;
-  height: 26px;
-  margin-top: 6px;
+  height: 40px;
+  margin-top: 5px;
   justify-content: center;
   align-items: center;
+  border-radius: 18px;
+  background-color: #626a76;
 }
 .back-label {
   color: #a8c8ff;

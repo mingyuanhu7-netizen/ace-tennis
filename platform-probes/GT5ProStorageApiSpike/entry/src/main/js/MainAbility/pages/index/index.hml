@@ -73,6 +73,9 @@
     <div class="action" if="{{ pageMode === 'SIZE' }}" onclick="onShowBoundaryDiagnostic">
         <text class="action-label">RUN G-I</text>
     </div>
+    <div class="action" if="{{ pageMode === 'SIZE' }}" onclick="onShowTouchBoundary">
+        <text class="action-label">RUN J-L</text>
+    </div>
 
     <text class="title" if="{{ pageMode === 'BOUNDARY' }}">BOUNDARY TEST</text>
     <text class="info" if="{{ pageMode === 'BOUNDARY' }}">G {{ boundaryG }}</text>
@@ -82,6 +85,17 @@
         <text class="action-label">RUN G-I</text>
     </div>
     <div class="back" if="{{ pageMode === 'BOUNDARY' }}" onclick="onShowSizeDiagnostic">
+        <text class="back-label">BACK</text>
+    </div>
+
+    <text class="title" if="{{ pageMode === 'TOUCH' }}">TOUCH TEST</text>
+    <text class="info" if="{{ pageMode === 'TOUCH' }}">J {{ touchJ }}</text>
+    <text class="info" if="{{ pageMode === 'TOUCH' }}">K {{ touchK }}</text>
+    <text class="info" if="{{ pageMode === 'TOUCH' }}">L {{ touchL }}</text>
+    <div class="action" if="{{ pageMode === 'TOUCH' }}" onclick="onRunTouchBoundary">
+        <text class="action-label">RUN J-L</text>
+    </div>
+    <div class="back" if="{{ pageMode === 'TOUCH' }}" onclick="onShowSizeDiagnostic">
         <text class="back-label">BACK</text>
     </div>
 </div>
