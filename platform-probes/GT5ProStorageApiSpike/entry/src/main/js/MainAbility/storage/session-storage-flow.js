@@ -142,6 +142,56 @@ export function runWriteDiagnostic(storage, record, onComplete) {
     });
 }
 
+export function createSizeDiagnosticCases(record) {
+    return [
+        sizeCase('A_39B_SIMPLE', 'at_p4_size_a', SIMPLE_DIAGNOSTIC_VALUE, null),
+        sizeCase('B_128B', 'at_p4_size_b', createPaddedJson(128), null),
+        sizeCase('C_256B', 'at_p4_size_c', createPaddedJson(256), null),
+        sizeCase('D_384B', 'at_p4_size_d', createPaddedJson(384), null),
+        sizeCase('E_548B', 'at_p4_size_e', createPaddedJson(548), null),
+        sizeCase('F_SESSION_RECORD', 'at_p4_size_f', serializeSessionRecord(record), record)
+    ];
+}
+
+export function runSizeDiagnostic(storage, record, onComplete) {
+    const cases = createSizeDiagnosticCases(record);
+    const steps = [];
+
+    function writeAt(index) {
+        if (index >= cases.length) {
+            onComplete({ result: steps.every((step) => step.result === 'PASS') ? 'PASS' : 'FAIL', steps: steps });
+            return;
+        }
+        const item = cases[index];
+        let jsonValid = false;
+        try {
+            JSON.parse(item.value);
+            jsonValid = true;
+        } catch (error) {
+            jsonValid = false;
+        }
+        if (jsonValid !== true || (item.record !== null && validateSessionRecord(item.record).valid !== true)) {
+            steps.push(diagnosticFailure(item.label, item.value, jsonValid, item.record === null ? null : false, 'PREWRITE_VALIDATION'));
+            writeAt(index + 1);
+            return;
+        }
+        storage.set({
+            key: item.key,
+            value: item.value,
+            success: function() {
+                steps.push(diagnosticSuccess(item.label, item.value, true, item.record === null ? null : true));
+                writeAt(index + 1);
+            },
+            fail: function(data, code) {
+                steps.push(diagnosticFailure(item.label, item.value, true, item.record === null ? null : true, formatStorageError(data, code)));
+                writeAt(index + 1);
+            }
+        });
+    }
+
+    writeAt(0);
+}
+
 export function readCompletedSession(storage, expectedRecord, onResult) {
     storage.get({
         key: COMPLETED_SESSION_STORAGE_KEY,
@@ -256,6 +306,37 @@ function diagnosticFailure(label, value, jsonValid, modelValid, error) {
         jsonValid: jsonValid,
         modelValid: modelValid
     };
+}
+
+function sizeCase(label, key, value, record) {
+    return {
+        label: label,
+        key: key,
+        value: value,
+        valueType: typeof value,
+        byteLength: utf8ByteLength(value),
+        jsonValid: isJson(value),
+        record: record
+    };
+}
+
+function createPaddedJson(targetBytes) {
+    let payload = '';
+    let value = JSON.stringify({ probe: 'P4-003-R03', payload: payload });
+    while (utf8ByteLength(value) < targetBytes) {
+        payload += 'x';
+        value = JSON.stringify({ probe: 'P4-003-R03', payload: payload });
+    }
+    return value;
+}
+
+function isJson(value) {
+    try {
+        JSON.parse(value);
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
 
 function utf8ByteLength(value) {

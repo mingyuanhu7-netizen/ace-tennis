@@ -53,4 +53,21 @@
     <div class="back" if="{{ pageMode === 'DIAGNOSTIC' }}" onclick="onShowOperations">
         <text class="back-label">BACK</text>
     </div>
+    <div class="action" if="{{ pageMode === 'DIAGNOSTIC' }}" onclick="onShowSizeDiagnostic">
+        <text class="action-label">SIZE A-F</text>
+    </div>
+
+    <text class="title" if="{{ pageMode === 'SIZE' }}">SIZE TEST</text>
+    <text class="info" if="{{ pageMode === 'SIZE' }}">A {{ sizeA }}</text>
+    <text class="info" if="{{ pageMode === 'SIZE' }}">B {{ sizeB }}</text>
+    <text class="info" if="{{ pageMode === 'SIZE' }}">C {{ sizeC }}</text>
+    <text class="info" if="{{ pageMode === 'SIZE' }}">D {{ sizeD }}</text>
+    <text class="info" if="{{ pageMode === 'SIZE' }}">E {{ sizeE }}</text>
+    <text class="info" if="{{ pageMode === 'SIZE' }}">F {{ sizeF }}</text>
+    <div class="action" if="{{ pageMode === 'SIZE' }}" onclick="onRunSizeDiagnostic">
+        <text class="action-label">RUN SIZE</text>
+    </div>
+    <div class="back" if="{{ pageMode === 'SIZE' }}" onclick="onShowDiagnostic">
+        <text class="back-label">BACK</text>
+    </div>
 </div>

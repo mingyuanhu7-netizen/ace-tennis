@@ -47,6 +47,7 @@ assert.match(hml, /pageMode === 'STATUS'/);
 assert.match(hml, /pageMode === 'OPERATIONS'/);
 assert.match(hml, /pageMode === 'RESULT'/);
 assert.match(hml, /pageMode === 'DIAGNOSTIC'/);
+assert.match(hml, /pageMode === 'SIZE'/);
 for (const action of ['SAVE', 'READ', 'VERIFY']) {
     assert.match(hml, new RegExp('>' + action + '<'));
 }
@@ -54,6 +55,7 @@ assert.match(page, /onShowOperations\(\)/);
 assert.match(page, /onShowStatus\(\)/);
 assert.match(page, /onSave\(\)/);
 assert.match(page, /onRunDiagnostic\(\)/);
+assert.match(page, /onRunSizeDiagnostic\(\)/);
 assert.match(page, /onRead\(\)/);
 assert.match(page, /onVerify\(\)/);
 assert.match(css, /\.container\s*\{[^}]*flex-direction:\s*column;/s);

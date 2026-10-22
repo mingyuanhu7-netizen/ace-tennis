@@ -1,6 +1,7 @@
 import storage from '@system.storage';
 import {
     createCompletedSessionTestRecord,
+    runSizeDiagnostic,
     readCompletedSession,
     runWriteDiagnostic,
     saveCompletedSession,
@@ -21,6 +22,12 @@ export default {
         detailGames: '-',
         diagnosticA: 'NOT_RUN',
         diagnosticB: 'NOT_RUN',
+        sizeA: 'NOT_RUN',
+        sizeB: 'NOT_RUN',
+        sizeC: 'NOT_RUN',
+        sizeD: 'NOT_RUN',
+        sizeE: 'NOT_RUN',
+        sizeF: 'NOT_RUN',
         pageMode: 'STATUS'
     },
 
@@ -74,6 +81,26 @@ export default {
             page.lastOperation = 'A_THEN_B';
             page.lastResult = result.result;
             page.lastError = result.result === 'PASS' ? 'NONE' : 'SEE_A_B';
+        });
+    },
+
+    onShowSizeDiagnostic() {
+        this.pageMode = 'SIZE';
+    },
+
+    onRunSizeDiagnostic() {
+        const page = this;
+        runSizeDiagnostic(storage, this.expectedRecord, function(result) {
+            const steps = result.steps;
+            page.sizeA = formatDiagnosticStep(steps[0]);
+            page.sizeB = formatDiagnosticStep(steps[1]);
+            page.sizeC = formatDiagnosticStep(steps[2]);
+            page.sizeD = formatDiagnosticStep(steps[3]);
+            page.sizeE = formatDiagnosticStep(steps[4]);
+            page.sizeF = formatDiagnosticStep(steps[5]);
+            page.lastOperation = 'SIZE_A_TO_F';
+            page.lastResult = result.result;
+            page.lastError = result.result === 'PASS' ? 'NONE' : 'SEE_CASES';
         });
     },
 

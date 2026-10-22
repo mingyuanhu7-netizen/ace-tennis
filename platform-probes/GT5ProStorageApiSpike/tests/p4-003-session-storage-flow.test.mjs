@@ -2,8 +2,10 @@ import assert from 'node:assert/strict';
 import {
     COMPLETED_SESSION_STORAGE_KEY,
     createCompletedSessionTestRecord,
+    createSizeDiagnosticCases,
     readCompletedSession,
     runWriteDiagnostic,
+    runSizeDiagnostic,
     saveCompletedSession,
     verifyCompletedSession
 } from '../entry/src/main/js/MainAbility/storage/session-storage-flow.js';
@@ -138,3 +140,21 @@ assert.equal(diagnosticResult.steps[1].modelValid, true);
 assert.equal(diagnosticResult.steps[0].byteLength > 0, true);
 assert.equal(diagnosticResult.steps[1].byteLength > diagnosticResult.steps[0].byteLength, true);
 console.log('P4-003 write A/B diagnostic: PASS');
+
+const sizeCases = createSizeDiagnosticCases(expected);
+assert.deepEqual(sizeCases.map((item) => item.label), ['A_39B_SIMPLE', 'B_128B', 'C_256B', 'D_384B', 'E_548B', 'F_SESSION_RECORD']);
+assert.equal(sizeCases.every((item) => item.valueType === 'string' && item.jsonValid === true), true);
+assert.equal(sizeCases[0].byteLength, 39);
+assert.equal(sizeCases[1].byteLength, 128);
+assert.equal(sizeCases[2].byteLength, 256);
+assert.equal(sizeCases[3].byteLength, 384);
+assert.equal(sizeCases[4].byteLength, 548);
+
+let sizeDiagnosticResult;
+runSizeDiagnostic(new FakeStorage(), expected, (value) => {
+    sizeDiagnosticResult = value;
+});
+assert.equal(sizeDiagnosticResult.steps.length, 6);
+assert.equal(sizeDiagnosticResult.steps.every((step) => step.result === 'PASS'), true);
+assert.deepEqual(sizeDiagnosticResult.steps.map((step) => step.byteLength), [39, 128, 256, 384, 548, 548]);
+console.log('P4-003 size A-F diagnostic: PASS');
