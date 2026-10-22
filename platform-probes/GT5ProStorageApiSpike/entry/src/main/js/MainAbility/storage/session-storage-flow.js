@@ -192,6 +192,61 @@ export function runSizeDiagnostic(storage, record, onComplete) {
     writeAt(0);
 }
 
+export function createBoundaryDiagnosticCases() {
+    return [
+        sizeCase('G_160B', 'at_p4_bound_g', createPaddedJson(160), null),
+        sizeCase('H_192B', 'at_p4_bound_h', createPaddedJson(192), null),
+        sizeCase('I_224B', 'at_p4_bound_i', createPaddedJson(224), null)
+    ];
+}
+
+export function runBoundaryDiagnostic(storage, onComplete) {
+    const cases = createBoundaryDiagnosticCases();
+    const steps = [];
+
+    function runAt(index) {
+        if (index >= cases.length) {
+            onComplete({ result: steps.every((step) => step.result === 'PASS') ? 'PASS' : 'FAIL', steps: steps });
+            return;
+        }
+        const item = cases[index];
+        storage.set({
+            key: item.key,
+            value: item.value,
+            success: function() {
+                storage.get({
+                    key: item.key,
+                    default: MISSING_SESSION_VALUE,
+                    success: function(value) {
+                        const matched = value === item.value;
+                        steps.push({
+                            label: item.label,
+                            byteLength: item.byteLength,
+                            valueType: item.valueType,
+                            setStatus: 'PASS',
+                            getStatus: 'PASS',
+                            match: matched ? 'PASS' : 'FAIL',
+                            result: matched ? 'PASS' : 'FAIL',
+                            error: matched ? 'NONE' : 'READBACK_MISMATCH'
+                        });
+                        runAt(index + 1);
+                    },
+                    fail: function(data, code) {
+                        steps.push(boundaryFailure(item, 'PASS', 'FAIL', 'NOT_TESTED', formatStorageError(data, code)));
+                        runAt(index + 1);
+                    }
+                });
+            },
+            fail: function(data, code) {
+                steps.push(boundaryFailure(item, 'FAIL', 'NOT_TESTED', 'NOT_TESTED', formatStorageError(data, code)));
+                runAt(index + 1);
+            }
+        });
+    }
+
+    runAt(0);
+}
+
 export function readCompletedSession(storage, expectedRecord, onResult) {
     storage.get({
         key: COMPLETED_SESSION_STORAGE_KEY,
@@ -317,6 +372,19 @@ function sizeCase(label, key, value, record) {
         byteLength: utf8ByteLength(value),
         jsonValid: isJson(value),
         record: record
+    };
+}
+
+function boundaryFailure(item, setStatus, getStatus, match, error) {
+    return {
+        label: item.label,
+        byteLength: item.byteLength,
+        valueType: item.valueType,
+        setStatus: setStatus,
+        getStatus: getStatus,
+        match: match,
+        result: 'FAIL',
+        error: error || 'UNKNOWN'
     };
 }
 

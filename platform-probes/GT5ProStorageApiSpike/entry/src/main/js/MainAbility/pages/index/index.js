@@ -2,6 +2,7 @@ import storage from '@system.storage';
 import {
     createCompletedSessionTestRecord,
     runSizeDiagnostic,
+    runBoundaryDiagnostic,
     readCompletedSession,
     runWriteDiagnostic,
     saveCompletedSession,
@@ -28,6 +29,9 @@ export default {
         sizeD: 'NOT_RUN',
         sizeE: 'NOT_RUN',
         sizeF: 'NOT_RUN',
+        boundaryG: 'NOT_RUN',
+        boundaryH: 'NOT_RUN',
+        boundaryI: 'NOT_RUN',
         pageMode: 'STATUS'
     },
 
@@ -104,6 +108,23 @@ export default {
         });
     },
 
+    onShowBoundaryDiagnostic() {
+        this.pageMode = 'BOUNDARY';
+    },
+
+    onRunBoundaryDiagnostic() {
+        const page = this;
+        runBoundaryDiagnostic(storage, function(result) {
+            const steps = result.steps;
+            page.boundaryG = formatBoundaryStep(steps[0]);
+            page.boundaryH = formatBoundaryStep(steps[1]);
+            page.boundaryI = formatBoundaryStep(steps[2]);
+            page.lastOperation = 'BOUNDARY_G_TO_I';
+            page.lastResult = result.result;
+            page.lastError = result.result === 'PASS' ? 'NONE' : 'SEE_CASES';
+        });
+    },
+
     onSave() {
         const page = this;
         saveCompletedSession(storage, this.expectedRecord, function(result) {
@@ -149,4 +170,11 @@ function formatDiagnosticStep(step) {
         return 'NOT_RUN';
     }
     return step.result + ' ' + step.error + ' ' + step.valueType + ' ' + String(step.byteLength) + 'B';
+}
+
+function formatBoundaryStep(step) {
+    if (!step) {
+        return 'NOT_RUN';
+    }
+    return String(step.byteLength) + 'B ' + step.setStatus + '/' + step.getStatus + '/' + step.match + ' ' + step.error;
 }

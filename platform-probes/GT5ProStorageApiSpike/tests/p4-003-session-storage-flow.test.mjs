@@ -2,10 +2,12 @@ import assert from 'node:assert/strict';
 import {
     COMPLETED_SESSION_STORAGE_KEY,
     createCompletedSessionTestRecord,
+    createBoundaryDiagnosticCases,
     createSizeDiagnosticCases,
     readCompletedSession,
     runWriteDiagnostic,
     runSizeDiagnostic,
+    runBoundaryDiagnostic,
     saveCompletedSession,
     verifyCompletedSession
 } from '../entry/src/main/js/MainAbility/storage/session-storage-flow.js';
@@ -158,3 +160,19 @@ assert.equal(sizeDiagnosticResult.steps.length, 6);
 assert.equal(sizeDiagnosticResult.steps.every((step) => step.result === 'PASS'), true);
 assert.deepEqual(sizeDiagnosticResult.steps.map((step) => step.byteLength), [39, 128, 256, 384, 548, 548]);
 console.log('P4-003 size A-F diagnostic: PASS');
+
+const boundaryCases = createBoundaryDiagnosticCases();
+assert.deepEqual(boundaryCases.map((item) => item.label), ['G_160B', 'H_192B', 'I_224B']);
+assert.deepEqual(boundaryCases.map((item) => item.byteLength), [160, 192, 224]);
+assert.equal(boundaryCases.every((item) => item.valueType === 'string' && item.jsonValid === true), true);
+
+let boundaryResult;
+runBoundaryDiagnostic(new FakeStorage(), (value) => {
+    boundaryResult = value;
+});
+assert.equal(boundaryResult.steps.length, 3);
+assert.equal(boundaryResult.steps.every((step) => step.setStatus === 'PASS'), true);
+assert.equal(boundaryResult.steps.every((step) => step.getStatus === 'PASS'), true);
+assert.equal(boundaryResult.steps.every((step) => step.match === 'PASS'), true);
+assert.equal(boundaryResult.steps.every((step) => step.error === 'NONE'), true);
+console.log('P4-003 boundary G-I diagnostic: PASS');
